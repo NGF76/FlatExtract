@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/new/icons">
+        <file>Icons/app-development.png</file>
+        <file>Icons/burn.png</file>
+        <file>Icons/customer-support.png</file>
+        <file>Icons/extraction.png</file>
+        <file>Icons/folder.png</file>
+        <file>Icons/play-button.png</file>
+        <file>Icons/plus.png</file>
+        <file>Icons/refresh.png</file>
+        <file>Icons/settings (3).png</file>
+    </qresource>
+</RCC>

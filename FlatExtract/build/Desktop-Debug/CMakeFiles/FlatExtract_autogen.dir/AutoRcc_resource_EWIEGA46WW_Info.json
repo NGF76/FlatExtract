@@ -1,0 +1,20 @@
+{
+	"BUILD_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen",
+	"CMAKE_BINARY_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract",
+	"CMAKE_SOURCE_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract",
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/include",
+	"INPUTS" : [],
+	"LOCK_FILE" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/FlatExtract_autogen.dir/AutoRcc_resource_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "resource" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_resource.cpp",
+	"RCC_EXECUTABLE" : "/usr/lib/qt5/bin/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/FlatExtract_autogen.dir/AutoRcc_resource_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/resource.qrc",
+	"VERBOSITY" : 0
+}

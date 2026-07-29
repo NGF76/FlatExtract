@@ -1,0 +1,27 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/FlatExtract_autogen.dir/AutogenUsed.txt"
+  "CMakeFiles/FlatExtract_autogen.dir/ParseCache.txt"
+  "FlatExtract_autogen"
+  "CMakeFiles/FlatExtract.dir/FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp.o"
+  "CMakeFiles/FlatExtract.dir/FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp.o.d"
+  "CMakeFiles/FlatExtract.dir/FlatExtract_autogen/mocs_compilation.cpp.o"
+  "CMakeFiles/FlatExtract.dir/FlatExtract_autogen/mocs_compilation.cpp.o.d"
+  "CMakeFiles/FlatExtract.dir/main.cpp.o"
+  "CMakeFiles/FlatExtract.dir/main.cpp.o.d"
+  "CMakeFiles/FlatExtract.dir/mainwindow.cpp.o"
+  "CMakeFiles/FlatExtract.dir/mainwindow.cpp.o.d"
+  "CMakeFiles/FlatExtract.dir/multiarchive.cpp.o"
+  "CMakeFiles/FlatExtract.dir/multiarchive.cpp.o.d"
+  "CMakeFiles/FlatExtract.dir/tool.cpp.o"
+  "CMakeFiles/FlatExtract.dir/tool.cpp.o.d"
+  "FlatExtract"
+  "FlatExtract.pdb"
+  "FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp"
+  "FlatExtract_autogen/mocs_compilation.cpp"
+  "FlatExtract_autogen/timestamp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/FlatExtract.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
