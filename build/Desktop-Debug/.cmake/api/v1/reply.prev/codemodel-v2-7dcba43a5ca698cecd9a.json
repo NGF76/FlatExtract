@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-46572f2abe8a9a10e518.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "FlatExtract",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "FlatExtract::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FlatExtract-Debug-e5fe0733a872dda49e6d.json",
+					"name" : "FlatExtract",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "FlatExtract_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FlatExtract_autogen-Debug-cac5321e562d78644ab6.json",
+					"name" : "FlatExtract_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "FlatExtract_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FlatExtract_autogen_timestamp_deps-Debug-cf8549d6003870ded1ca.json",
+					"name" : "FlatExtract_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug",
+		"source" : "/home/ngf/Desktop/PJ-Apps/FlatExtract"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
