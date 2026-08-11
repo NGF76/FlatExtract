@@ -16,6 +16,9 @@ find_library(QUAZIP_LIBRARY quazip5 REQUIRED)
 find_path(QUAZIP_INCLUDE_DIR quazip5/quazip.h REQUIRED)
 find_package(ISO9660_LIBRARY NAMES iso9660 libiso9660 PATHS /usr/lib usr/lib/x86_64-linux-gnu )
 find_package(CDIO_LIBRARY NAMES cdio libcdio PATHS /usr/lib usr/lib/x86_64-linux-gnu)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(R2 REQUIRED r_core)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -43,8 +46,13 @@ else()
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
+        file(GLOB HEADERS_UTILITYXEX)
+
         add_executable(FlatExtract
             ${PROJECT_SOURCES}
+            ${SOURCES}
+            ${HEADERS}
+            ${HEADERS_UTILITYXEX}
             resources.qrc
             tool.h
             tool.cpp
@@ -56,6 +64,17 @@ else()
             progresshelper.cpp
             isotool.h
             isotool.cpp
+            Xtool.h
+            Xtool.cpp
+            iso_reader.h
+            xex_parser.h
+            stfs_reader.h
+            analysis.c
+            analysis.h
+            genrate.cpp
+            UtilityXex/genrated.h
+
+
 
         )
     endif()
@@ -97,12 +116,18 @@ target_link_libraries(FlatExtract PRIVATE
     ${CDIO_LIBRARIES}
     ${CDIOPP_LIBRARIES}
     ${ISO9660_LIBRARIES}
+    ${CMAKE_C_STANDARD_LIBRARIES}
+    ${R2_LIBRARIES}
 )
 
 target_include_directories(FlatExtract PRIVATE
     ${QUAZIP_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
  /usr/include
+
+ ${R2_INCLUDE_DIRS}
+
+ "${CMAKE_CURRENT_DIR}/UtilityXex"
 )
 
 # تعريف مسار QuaZip5 يدوياً
@@ -141,3 +166,8 @@ if(ISO9660_LIBRARY)
 else()
     message(STATUS "libiso9660 NOT Found!")
 endif()
+
+
+##conecnt Folder to Project
+include_directories(UtilityXex)
+

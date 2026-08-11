@@ -326,6 +326,10 @@ CMakeFiles/FlatExtract.dir/mainwindow.cpp.o: \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/include/ui_mainwindow.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QVariant \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qvariant.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QAction \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qaction.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qactiongroup.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qaction.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qapplication.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qcoreapplication.h \
@@ -352,11 +356,11 @@ CMakeFiles/FlatExtract.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabbar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qrubberband.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenu \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenu.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenubar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenu.h \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qaction.h \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qactiongroup.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qpushbutton.h \
@@ -377,6 +381,21 @@ CMakeFiles/FlatExtract.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qcontiguouscache.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/progresshelper.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/stfs_reader.h \
+ /usr/include/c++/13/cstring /usr/include/c++/13/fstream \
+ /usr/include/c++/13/istream /usr/include/c++/13/ios \
+ /usr/include/c++/13/bits/basic_ios.h \
+ /usr/include/c++/13/bits/locale_facets.h /usr/include/c++/13/cwctype \
+ /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h \
+ /usr/include/c++/13/bits/locale_facets.tcc \
+ /usr/include/c++/13/bits/basic_ios.tcc /usr/include/c++/13/ostream \
+ /usr/include/c++/13/bits/ostream.tcc \
+ /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
+ /usr/include/c++/13/bits/fstream.tcc \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QFileDialog \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qfiledialog.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qdir.h \

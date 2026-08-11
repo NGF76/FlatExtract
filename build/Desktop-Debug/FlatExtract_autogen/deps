@@ -1,11 +1,18 @@
 FlatExtract_autogen/timestamp: \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/CMakeLists.txt \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex/genrated.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.c \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/.qtc/package-manager/auto-setup.cmake \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/3.28.3/CMakeCXXCompiler.cmake \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/3.28.3/CMakeSystem.cmake \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/moc_predefs.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/genrate.cpp \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/iso_reader.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/main.cpp \
@@ -16,8 +23,10 @@ FlatExtract_autogen/timestamp: \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/progresshelper.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/progresshelper.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/resources.qrc \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/stfs_reader.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/xex_parser.h \
 	/usr/include/alloca.h \
 	/usr/include/asm-generic/errno-base.h \
 	/usr/include/asm-generic/errno.h \
@@ -43,6 +52,7 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/c++/13/bits/c++0x_warning.h \
 	/usr/include/c++/13/bits/char_traits.h \
 	/usr/include/c++/13/bits/charconv.h \
+	/usr/include/c++/13/bits/codecvt.h \
 	/usr/include/c++/13/bits/concept_check.h \
 	/usr/include/c++/13/bits/cpp_type_traits.h \
 	/usr/include/c++/13/bits/cxxabi_forced.h \
@@ -52,11 +62,13 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/c++/13/bits/exception.h \
 	/usr/include/c++/13/bits/exception_defines.h \
 	/usr/include/c++/13/bits/exception_ptr.h \
+	/usr/include/c++/13/bits/fstream.tcc \
 	/usr/include/c++/13/bits/functexcept.h \
 	/usr/include/c++/13/bits/functional_hash.h \
 	/usr/include/c++/13/bits/hash_bytes.h \
 	/usr/include/c++/13/bits/invoke.h \
 	/usr/include/c++/13/bits/ios_base.h \
+	/usr/include/c++/13/bits/istream.tcc \
 	/usr/include/c++/13/bits/iterator_concepts.h \
 	/usr/include/c++/13/bits/list.tcc \
 	/usr/include/c++/13/bits/locale_classes.h \
@@ -132,7 +144,9 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/c++/13/concepts \
 	/usr/include/c++/13/cstddef \
 	/usr/include/c++/13/cstdint \
+	/usr/include/c++/13/cstdio \
 	/usr/include/c++/13/cstdlib \
+	/usr/include/c++/13/cstring \
 	/usr/include/c++/13/cwchar \
 	/usr/include/c++/13/cwctype \
 	/usr/include/c++/13/debug/assertions.h \
@@ -145,10 +159,12 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/c++/13/ext/numeric_traits.h \
 	/usr/include/c++/13/ext/string_conversions.h \
 	/usr/include/c++/13/ext/type_traits.h \
+	/usr/include/c++/13/fstream \
 	/usr/include/c++/13/functional \
 	/usr/include/c++/13/initializer_list \
 	/usr/include/c++/13/ios \
 	/usr/include/c++/13/iosfwd \
+	/usr/include/c++/13/istream \
 	/usr/include/c++/13/iterator \
 	/usr/include/c++/13/limits \
 	/usr/include/c++/13/list \
@@ -272,8 +288,10 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/bits/wordsize.h \
 	/usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
+	/usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
+	/usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h \
@@ -283,8 +301,10 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/QDebug \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/QString \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/QStringList \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qabstractitemmodel.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qalgorithms.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qarraydata.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qatomic.h \
@@ -297,8 +317,10 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qconfig.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qcontainerfwd.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qcontainertools_impl.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qcontiguouscache.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qcoreevent.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qdatastream.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qdebug.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qfile.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qfiledevice.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qflags.h \
@@ -308,9 +330,11 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qhash.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qhashfunctions.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qiodevice.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qitemselectionmodel.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qiterator.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qline.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qlist.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qlocale.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qlogging.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qmap.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qmargins.h \
@@ -327,6 +351,7 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qrect.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qrefcount.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qregexp.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qregularexpression.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qscopedpointer.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qset.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qshareddata.h \
@@ -342,6 +367,7 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qsysinfo.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qsystemdetection.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qtcore-config.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/qtextstream.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qtypeinfo.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qurl.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qvariant.h \
@@ -381,23 +407,43 @@ FlatExtract_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtguiglobal.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtouchdevice.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtransform.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtGui/qvalidator.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qvector2d.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qwindowdefs.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QDockWidget \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPlainTextEdit \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressBar \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressDialog \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QStatusBar \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTreeWidget \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemdelegate.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemview.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractscrollarea.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractslider.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractspinbox.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdockwidget.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qframe.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmainwindow.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qplaintextedit.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qprogressbar.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qprogressdialog.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qpushbutton.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qrubberband.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qsizepolicy.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qslider.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstatusbar.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstyle.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstyleoption.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabbar.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabwidget.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtextedit.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtreeview.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtreewidget.h \
+	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtreewidgetitemiterator.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgets-config.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgetsglobal.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qwidget.h \
@@ -459,6 +505,7 @@ FlatExtract_autogen/timestamp: \
 	/usr/share/cmake-3.28/Modules/Compiler/GNU.cmake \
 	/usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake \
 	/usr/share/cmake-3.28/Modules/FindPackageMessage.cmake \
+	/usr/share/cmake-3.28/Modules/FindPkgConfig.cmake \
 	/usr/share/cmake-3.28/Modules/FindZLIB.cmake \
 	/usr/share/cmake-3.28/Modules/GNUInstallDirs.cmake \
 	/usr/share/cmake-3.28/Modules/Platform/Linux-GNU-CXX.cmake \

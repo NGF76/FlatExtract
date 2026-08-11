@@ -183,6 +183,12 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuDeveloped_by_NGF">
+    <property name="title">
+     <string>Developed by NGF</string>
+    </property>
+   </widget>
+   <addaction name="menuDeveloped_by_NGF"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

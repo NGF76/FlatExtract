@@ -1,16 +1,18 @@
 // ============================================================
 // isotool.cpp
-// دوال التعامل مع ملفات ISO باستخدام libcdio
+// دوال التعامل مع ملفات ISO (Xbox 360 / XDVDFS) + استخراج حزم STFS تلقائياً
 // ============================================================
 
 #include "isotool.h"
 #include "debughelper.h"
 
-#include <cdio/cdio.h>
-#include <cdio/iso9660.h>
 #include <QFileInfo>
 #include <QDir>
 #include <QDebug>
+#include <fstream>
+#include "iso_reader.h"
+#include "xex_parser.h"
+#include "stfs_reader.h"
 
 // ============================================================
 // 1. ثوابت (Constants)
@@ -46,36 +48,7 @@ static bool createOutputDir(const QString &outputPath, QString &errorMessage)
 }
 
 // ============================================================
-// 3. اختبار وجود المكتبة
-// ============================================================
-
-bool testLibCdio()
-{
-    debugFunctionStart("testLibCdio");
-
-#ifdef CDIO_VERSION
-    qDebug() << "✅ libcdio found! Version:" << CDIO_VERSION;
-#else
-    qDebug() << "❌ libcdio NOT found!";
-    debugFunctionEnd("testLibCdio");
-    return false;
-#endif
-
-    CdIo_t *cdio = cdio_open(NULL, DRIVER_DEVICE);
-    if (cdio) {
-        qDebug() << "✅ Device opened successfully!";
-        cdio_destroy(cdio);
-        debugFunctionEnd("testLibCdio");
-        return true;
-    } else {
-        qDebug() << "⚠️ No device found, but library is linked.";
-        debugFunctionEnd("testLibCdio");
-        return true;
-    }
-}
-
-// ============================================================
-// 4. عرض محتويات ISO
+// 3. عرض محتويات ISO
 // ============================================================
 
 QStringList getIsoContents(const QString &isoPath, QString &errorMessage)
@@ -89,38 +62,28 @@ QStringList getIsoContents(const QString &isoPath, QString &errorMessage)
         return QStringList();
     }
 
-    iso9660_t *p_iso = iso9660_open(isoPath.toUtf8().constData());
-    if (!p_iso) {
+    IsoReader iso;
+    if (!iso.Open(isoPath.toStdString())) {
         errorMessage = ERROR_OPEN_ISO + isoPath;
         debugError(errorMessage);
         debugFunctionEnd("getIsoContents");
         return QStringList();
     }
 
-    CdioList_t *p_entlist = iso9660_ifs_readdir(p_iso, "/");
-    QStringList files;
+    auto entries = iso.ListAllFiles();
 
-    if (p_entlist) {
-        CdioListNode_t *p_entnode;
-        _CDIO_LIST_FOREACH (p_entnode, p_entlist) {
-            iso9660_stat_t *p_statbuf = (iso9660_stat_t *) _cdio_list_node_data(p_entnode);
-            if (p_statbuf) {
-                char filename[4096];
-                iso9660_name_translate(p_statbuf->filename, filename);
-                files << QString::fromUtf8(filename);
-            }
-        }
-        _cdio_list_free(p_entlist, true, nullptr);
+    QStringList files;
+    for (const auto &e : entries) {
+        files << QString::fromStdString(e.path);
     }
 
-    iso9660_close(p_iso);
     debugFileList("Files in ISO", files);
     debugFunctionEnd("getIsoContents");
     return files;
 }
 
 // ============================================================
-// 5. استخراج ملف واحد من ISO
+// 4. استخراج ملف واحد من ISO (بالمسار الكامل)
 // ============================================================
 
 bool extractFileFromIso(const QString &isoPath, const QString &fileName, const QString &outputPath, QString &errorMessage)
@@ -140,55 +103,54 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
         return false;
     }
 
-    iso9660_t *p_iso = iso9660_open(isoPath.toUtf8().constData());
-    if (!p_iso) {
+    IsoReader iso;
+    if (!iso.Open(isoPath.toStdString())) {
         errorMessage = ERROR_OPEN_ISO + isoPath;
         debugError(errorMessage);
         debugFunctionEnd("extractFileFromIso");
         return false;
     }
 
-    iso9660_stat_t *p_statbuf = iso9660_ifs_stat_translate(p_iso, fileName.toUtf8().constData());
-    if (!p_statbuf) {
+    auto entries = iso.ListAllFiles();
+    std::string target = fileName.toStdString();
+
+    const IsoFileEntry *match = nullptr;
+    for (const auto &e : entries) {
+        if (!e.isDirectory && e.path == target) {
+            match = &e;
+            break;
+        }
+    }
+
+    if (!match) {
         errorMessage = "الملف غير موجود في ISO: " + fileName;
         debugError(errorMessage);
-        iso9660_close(p_iso);
         debugFunctionEnd("extractFileFromIso");
         return false;
     }
 
-    QString fullOutputPath = outputPath + "/" + fileName;
-    FILE *p_outfd = fopen(fullOutputPath.toUtf8().constData(), "wb");
-    if (!p_outfd) {
+    std::vector<uint8_t> data;
+    if (!iso.ExtractBySector(match->startSector, match->fileSize, data)) {
+        errorMessage = "خطأ في قراءة ملف ISO";
+        debugError(errorMessage);
+        debugFunctionEnd("extractFileFromIso");
+        return false;
+    }
+
+    QString baseName = fileName;
+    int lastSep = baseName.lastIndexOf('\\');
+    if (lastSep >= 0) baseName = baseName.mid(lastSep + 1);
+
+    QString fullOutputPath = outputPath + "/" + baseName;
+    std::ofstream out(fullOutputPath.toStdString(), std::ios::binary);
+    if (!out) {
         errorMessage = "فشل في إنشاء الملف الناتج: " + fullOutputPath;
         debugError(errorMessage);
-        free(p_statbuf);
-        iso9660_close(p_iso);
         debugFunctionEnd("extractFileFromIso");
         return false;
     }
-
-    const unsigned int i_blocks = (p_statbuf->size + ISO_BLOCKSIZE - 1) / ISO_BLOCKSIZE;
-    for (unsigned int i = 0; i < i_blocks; i++) {
-        char buf[ISO_BLOCKSIZE];
-        const lsn_t lsn = p_statbuf->lsn + i;
-
-        if (ISO_BLOCKSIZE != iso9660_iso_seek_read(p_iso, buf, lsn, 1)) {
-            errorMessage = "خطأ في قراءة ملف ISO";
-            debugError(errorMessage);
-            fclose(p_outfd);
-            free(p_statbuf);
-            iso9660_close(p_iso);
-            debugFunctionEnd("extractFileFromIso");
-            return false;
-        }
-        fwrite(buf, ISO_BLOCKSIZE, 1, p_outfd);
-    }
-
-    fflush(p_outfd);
-    fclose(p_outfd);
-    free(p_statbuf);
-    iso9660_close(p_iso);
+    out.write((const char*)data.data(), (std::streamsize)data.size());
+    out.close();
 
     debugQuaZipResult("extractFileFromIso", true, fileName);
     debugFunctionEnd("extractFileFromIso");
@@ -196,7 +158,7 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
 }
 
 // ============================================================
-// 6. استخراج كل الملفات من ISO
+// 5. استخراج كل الملفات من ISO + استخراج حزم STFS تلقائياً
 // ============================================================
 
 bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QString &errorMessage)
@@ -216,45 +178,58 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
         return false;
     }
 
-    iso9660_t *p_iso = iso9660_open(isoPath.toUtf8().constData());
-    if (!p_iso) {
+    IsoReader iso;
+    if (!iso.Open(isoPath.toStdString())) {
         errorMessage = ERROR_OPEN_ISO + isoPath;
         debugError(errorMessage);
         debugFunctionEnd("extractAllFromIso");
         return false;
     }
 
-    CdioList_t *p_entlist = iso9660_ifs_readdir(p_iso, "/");
-    if (!p_entlist) {
-        errorMessage = ERROR_READ_CONTENTS;
-        debugError(errorMessage);
-        iso9660_close(p_iso);
-        debugFunctionEnd("extractAllFromIso");
-        return false;
-    }
+    auto entries = iso.ListAllFiles();
+
+    // ADD these two lines:
+    int xdvdfsTotal = 0;
+    for (const auto &e : entries) if (!e.isDirectory) xdvdfsTotal++;
+    int currentIndex = 0;   // ADD
 
     bool anySuccess = false;
-    CdioListNode_t *p_entnode;
-    _CDIO_LIST_FOREACH (p_entnode, p_entlist) {
-        iso9660_stat_t *p_statbuf = (iso9660_stat_t *) _cdio_list_node_data(p_entnode);
-        if (p_statbuf) {
-            char filename[4096];
-            iso9660_name_translate(p_statbuf->filename, filename);
-            QString fileName = QString::fromUtf8(filename);
+    uint64_t totalBytesWritten = 0;
 
-            if (fileName == "." || fileName == "..") continue;
+    for (const auto &e : entries) {
+        if (e.isDirectory) continue;
 
-            if (extractFileFromIso(isoPath, fileName, outputPath, errorMessage)) {
-                anySuccess = true;
-                qDebug() << "✅ Extracted:" << fileName;
-            } else {
-                qDebug() << "❌ Failed to extract:" << fileName;
-            }
+        std::vector<uint8_t> data;
+        if (!iso.ExtractBySector(e.startSector, e.fileSize, data)) {
+            qDebug() << "❌ Failed to extract:" << QString::fromStdString(e.path);
+            continue;
         }
+
+        QString relPath = QString::fromStdString(e.path);
+        relPath.replace('\\', '/');
+        QString fullOutputPath = outputPath + "/" + relPath;
+
+        QFileInfo fi(fullOutputPath);
+        if (!QDir().mkpath(fi.absolutePath())) {
+            qDebug() << "❌ Failed to create directory for:" << relPath;
+            continue;
+        }
+
+        std::ofstream out(fullOutputPath.toStdString(), std::ios::binary);
+        if (!out) {
+            qDebug() << "❌ Failed to create output file:" << fullOutputPath;
+            continue;
+        }
+        out.write((const char*)data.data(), (std::streamsize)data.size());
+        out.close();
+
+        totalBytesWritten += data.size();
+        anySuccess = true;
+        qDebug() << "✅ Extracted:" << relPath << "(" << data.size() << "bytes)";
+
     }
 
-    _cdio_list_free(p_entlist, true, nullptr);
-    iso9660_close(p_iso);
+    qDebug() << "Total XDVDFS bytes written:" << totalBytesWritten;
 
     if (!anySuccess) {
         errorMessage = ERROR_NO_FILES;
@@ -262,6 +237,68 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
         debugFunctionEnd("extractAllFromIso");
         return false;
     }
+
+    // ---- Auto-detect and recursively extract any STFS packages ----
+
+    for (const auto &e : entries) {
+        if (e.isDirectory) continue;
+
+        QString relPath = QString::fromStdString(e.path);
+        relPath.replace('\\', '/');
+        QString fullOutputPath = outputPath + "/" + relPath;
+
+        StfsReader stfs;
+        if (!stfs.Open(fullOutputPath.toStdString())) {
+            continue; // not an STFS package, skip silently
+        }
+
+        qDebug() << "📦 STFS package detected:" << relPath
+                 << "-" << QString::fromStdString(stfs.GetDisplayName());
+
+        // Extract into a sibling folder named "<file>_extracted"
+        QString stfsOutDir = fullOutputPath + "_extracted";
+        auto stfsFiles = stfs.ListAllFiles();
+
+        int stfsSuccessCount = 0;
+        uint64_t stfsBytesWritten = 0;
+
+
+
+        for (const auto &sf : stfsFiles) {
+            if (sf.isDirectory) continue;
+
+            std::vector<uint8_t> data;
+            if (!stfs.ExtractFile(sf, data)) {
+                qDebug() << "  ❌ Failed to extract STFS entry:" << QString::fromStdString(sf.path);
+                continue;
+            }
+
+            QString sfRelPath = QString::fromStdString(sf.path);
+            sfRelPath.replace('\\', '/');
+            QString sfFullPath = stfsOutDir + "/" + sfRelPath;
+
+            QFileInfo sfInfo(sfFullPath);
+            if (!QDir().mkpath(sfInfo.absolutePath())) {
+                qDebug() << "  ❌ Failed to create directory for:" << sfRelPath;
+                continue;
+            }
+
+            std::ofstream sfOut(sfFullPath.toStdString(), std::ios::binary);
+            if (!sfOut) {
+                qDebug() << "  ❌ Failed to create output file:" << sfFullPath;
+                continue;
+            }
+            sfOut.write((const char*)data.data(), (std::streamsize)data.size());
+            sfOut.close();
+
+            stfsSuccessCount++;
+            stfsBytesWritten += data.size();
+        }
+
+        qDebug() << "  ✅ STFS extracted:" << stfsSuccessCount << "files,"
+                 << stfsBytesWritten << "bytes ->" << stfsOutDir;
+    }
+    // ---- END STFS auto-extraction ----
 
     debugQuaZipResult("extractAllFromIso", true, "All files extracted");
     debugFunctionEnd("extractAllFromIso");

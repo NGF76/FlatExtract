@@ -10,6 +10,7 @@
 #include "debughelper.h"
 #include "progresshelper.h"
 #include "isotool.h"
+#include "stfs_reader.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -289,6 +290,41 @@ void MainWindow::onExtractClicked()
 
     ui->statusbar->showMessage("✅ تم استخراج " + QString::number(files.size()) + " ملف/مجلد بنجاح", 7000);
     QMessageBox::information(this, "نجاح", "تم استخراج الملفات بنجاح إلى:\n" + outputPath);
+
+    // stfs
+    StfsReader stfs;
+    QString stfsPath = outputPath + "/Content/0000000000000000/584111F7/000D0000/49AAD81B9FCDA45E4A03D71BFCB353F8FADB236C58";
+    if (stfs.Open(stfsPath.toStdString())) {
+        qDebug() << "STFS Title:" << QString::fromStdString(stfs.GetDisplayName());
+        auto files = stfs.ListAllFiles();
+        qDebug() << "STFS contains" << files.size() << "entries";
+        for (auto &f : files) {
+            qDebug() << QString::fromStdString(f.path) << f.fileSize << (f.isDirectory ? "[DIR]" : "");
+        }
+
+        // ---- NEW: extraction test, placed right here, still inside the same if-block ----
+        for (auto &f : files) {
+            if (f.path == "res\\gui\\gui.png") {
+                std::vector<uint8_t> data;
+                if (stfs.ExtractFile(f, data)) {
+                    qDebug() << "Extracted" << QString::fromStdString(f.path)
+                             << "- got" << data.size() << "bytes, expected" << f.fileSize;
+
+                    QString outPath = outputPath + "/test_gui.png";
+                    std::ofstream out(outPath.toStdString(), std::ios::binary);
+                    out.write((const char*)data.data(), (std::streamsize)data.size());
+                    out.close();
+                } else {
+                    qDebug() << "Extraction failed for" << QString::fromStdString(f.path);
+                }
+                break;
+            }
+        }
+        // ---- END extraction test ----
+
+    } else {
+        qDebug() << "Failed to open STFS package";
+    }
 
     debugFunctionEnd("onExtractClicked");
 }

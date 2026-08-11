@@ -9,6 +9,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <functional>
 
 
 /**
@@ -29,9 +30,15 @@ QStringList getIsoContents(const QString &isoPath, QString &errorMessage);
  * @return true إذا نجحت العملية، false إذا فشلت
  */
 
+// Callback signature: (current index, total count, current file name)
+using ExtractProgressCallback = std::function<void(int, int, const QString&)>;
+
 
 bool extractFileFromIso(const QString &isoPath, const QString &outputPath ,QString &errorMessage);
 bool extractAllFromIso(const QString &isoPath, const QString &outputPath ,QString &errorMessage);
+//bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
+                       //QString &errorMessage,                                disbled
+                       //ExtractProgressCallback progressCallback = nullptr);
 //const QString &fileName
 
 /**

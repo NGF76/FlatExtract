@@ -5,6 +5,9 @@
 
 #include <QApplication>
 #include "mainwindow.h"
+#include "Xtool.h"
+#include "xex_parser.h"
+#include "iso_reader.h"
 
 /**
  * @brief الدالة الرئيسية (Entry Point)

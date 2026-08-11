@@ -72,6 +72,9 @@
 		"/usr/share/cmake-3.28/Modules/SelectLibraryConfigurations.cmake",
 		"/usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake",
 		"/usr/share/cmake-3.28/Modules/FindPackageMessage.cmake",
+		"/usr/share/cmake-3.28/Modules/FindPkgConfig.cmake",
+		"/usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake",
+		"/usr/share/cmake-3.28/Modules/FindPackageMessage.cmake",
 		"/usr/share/cmake-3.28/Modules/GNUInstallDirs.cmake",
 		"/home/ngf/Desktop/PJ-Apps/FlatExtract/resources.qrc"
 	],
@@ -81,9 +84,33 @@
 	"HEADERS" : 
 	[
 		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex/genrated.h",
+			"MU",
+			"RMNMKLJO76/moc_genrated.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.h",
+			"MU",
+			"EWIEGA46WW/moc_Xtool.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.h",
+			"MU",
+			"EWIEGA46WW/moc_analysis.cpp",
+			null
+		],
+		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.h",
 			"MU",
 			"EWIEGA46WW/moc_debughelper.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/iso_reader.h",
+			"MU",
+			"EWIEGA46WW/moc_iso_reader.cpp",
 			null
 		],
 		[
@@ -111,9 +138,21 @@
 			null
 		],
 		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/stfs_reader.h",
+			"MU",
+			"EWIEGA46WW/moc_stfs_reader.cpp",
+			null
+		],
+		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h",
 			"MU",
 			"EWIEGA46WW/moc_tool.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/xex_parser.h",
+			"MU",
+			"EWIEGA46WW/moc_xex_parser.cpp",
 			null
 		]
 	],
@@ -130,7 +169,10 @@
 	],
 	"MOC_INCLUDES" : 
 	[
+		"/usr/local/include/libr",
+		"/UtilityXex",
 		"/usr/include/quazip5",
+		"/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex",
 		"/usr/include/x86_64-linux-gnu/qt5",
 		"/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
 		"/usr/include/x86_64-linux-gnu/qt5/QtGui",
@@ -169,7 +211,10 @@
 	"SETTINGS_FILE" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/FlatExtract_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp", "MU", null ],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.c", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.cpp", "MU", null ],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/genrate.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/main.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/mainwindow.cpp", "MU", null ],

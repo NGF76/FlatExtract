@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++-13
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB
 
-CXX_INCLUDES = -I/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/include -I/usr/include/quazip5 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+CXX_INCLUDES = -I/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/include -I/usr/local/include/libr -I/UtilityXex -I/usr/include/quazip5 -I/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 
 CXX_FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always -fPIC
 
