@@ -10,4 +10,70 @@
         <file>Icons/refresh.png</file>
         <file>Icons/settings (3).png</file>
     </qresource>
+    <qresource prefix="/Icon App"/>
+    <qresource prefix="/">
+        <file>Icon App/FlatExtract.png</file>
+        <file>Icon App/FlatExtract-format.png</file>
+        <file>Icon App/FlatExtract-formatgs.png</file>
+        <file>Icon App/FlatExtract-Base.png</file>
+        <file>fonts/Inter/static/Inter_18pt-Black.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-BlackItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Bold.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-BoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-ExtraBold.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-ExtraBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-ExtraLight.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-ExtraLightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Italic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Light.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-LightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Medium.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-MediumItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Regular.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-SemiBold.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-SemiBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-Thin.ttf</file>
+        <file>fonts/Inter/static/Inter_18pt-ThinItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Black.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-BlackItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Bold.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-BoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-ExtraBold.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-ExtraBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-ExtraLight.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-ExtraLightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Italic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Light.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-LightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Medium.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-MediumItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Regular.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-SemiBold.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-SemiBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-Thin.ttf</file>
+        <file>fonts/Inter/static/Inter_24pt-ThinItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Black.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-BlackItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Bold.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-BoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-ExtraBold.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-ExtraBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-ExtraLight.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-ExtraLightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Italic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Light.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-LightItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Medium.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-MediumItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Regular.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-SemiBold.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-SemiBoldItalic.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-Thin.ttf</file>
+        <file>fonts/Inter/static/Inter_28pt-ThinItalic.ttf</file>
+        <file>fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf</file>
+        <file>fonts/Inter/Inter-VariableFont_opsz,wght.ttf</file>
+        <file>fonts/Inter/OFL.txt</file>
+        <file>fonts/Inter/README.txt</file>
+    </qresource>
+    <qresource prefix="/fonts"/>
 </RCC>

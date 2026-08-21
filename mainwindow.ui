@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1950</width>
-    <height>1031</height>
+    <width>900</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>140</y>
-      <width>231</width>
-      <height>271</height>
+      <x>70</x>
+      <y>110</y>
+      <width>351</width>
+      <height>351</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -32,10 +32,10 @@
    <widget class="QWidget" name="verticalLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>140</y>
-      <width>231</width>
-      <height>271</height>
+      <x>460</x>
+      <y>110</y>
+      <width>351</width>
+      <height>351</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -47,8 +47,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>480</y>
+      <x>290</x>
+      <y>520</y>
       <width>301</width>
       <height>21</height>
      </rect>
@@ -79,8 +79,8 @@
    <widget class="QPushButton" name="chooseadestination">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>100</y>
+      <x>670</x>
+      <y>70</y>
       <width>141</width>
       <height>31</height>
      </rect>
@@ -98,8 +98,8 @@
    <widget class="QPushButton" name="fileselection">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>100</y>
+      <x>70</x>
+      <y>70</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -117,9 +117,9 @@
    <widget class="QLineEdit" name="destinationLineEdit">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>420</y>
-      <width>231</width>
+      <x>460</x>
+      <y>470</y>
+      <width>351</width>
       <height>31</height>
      </rect>
     </property>
@@ -127,9 +127,9 @@
    <widget class="QLineEdit" name="filepathlineEdit">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>420</y>
-      <width>231</width>
+      <x>70</x>
+      <y>470</y>
+      <width>351</width>
       <height>31</height>
      </rect>
     </property>
@@ -137,9 +137,9 @@
    <widget class="QPushButton" name="startextract">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>460</y>
-      <width>91</width>
+      <x>710</x>
+      <y>510</y>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -147,10 +147,49 @@
      <string>Start Extract</string>
     </property>
    </widget>
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>20</y>
+      <width>621</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="page">
+     <widget class="QPushButton" name="back">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>51</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="apply">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>420</y>
+        <width>80</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Apply</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_2"/>
+   </widget>
    <widget class="QPushButton" name="debugconsole">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>200</x>
       <y>10</y>
       <width>101</width>
       <height>31</height>
@@ -160,17 +199,17 @@
      <string>Debug Console</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="nightmode">
+   <widget class="QPushButton" name="supportButton">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>100</x>
       <y>10</y>
       <width>91</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>NightMode</string>
+     <string>Support Me</string>
     </property>
    </widget>
   </widget>
@@ -179,7 +218,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1950</width>
+     <width>900</width>
      <height>20</height>
     </rect>
    </property>

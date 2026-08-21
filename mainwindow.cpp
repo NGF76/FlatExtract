@@ -7,36 +7,49 @@
 #include "ui_mainwindow.h"
 
 #include "tool.h"
+#include "settingsdialog.h"
 #include "debughelper.h"
 #include "progresshelper.h"
 #include "isotool.h"
-#include "stfs_reader.h"
+#include "extractthread.h"
 
 #include <QFileDialog>
+#include <QSettings>
 #include <QMessageBox>
-#include <QMainWindow>
 #include <QDir>
 #include <QFileInfo>
 #include <QDirIterator>
 #include <QStatusBar>
 #include <QDebug>
-#include <cdio/cdio.h>
+#include <QIcon>
+#include <QThread>
+#include <QDesktopServices>
+#include <QUrl>
+
 
 // ============================================================
-// دالة معالجة رسائل Debug (عامة)
+// معالج رسائل Debug (عام)
 // ============================================================
 
 static void debugMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    Q_UNUSED(type);
-    Q_UNUSED(context);
+    QString prefix;
+    switch (type) {
+    case QtDebugMsg:    prefix = "[DEBUG]"; break;
+    case QtWarningMsg:  prefix = "[WARNING]"; break;
+    case QtCriticalMsg: prefix = "[CRITICAL]"; break;
+    case QtFatalMsg:    prefix = "[FATAL]"; break;
+    default:            prefix = "[INFO]"; break;
+    }
 
-    fprintf(stderr, "%s\n", msg.toLocal8Bit().constData());
+    fprintf(stderr, "%s %s\n", prefix.toUtf8().constData(), msg.toUtf8().constData());
 
     MainWindow *mainWindow = qobject_cast<MainWindow*>(qApp->activeWindow());
     if (mainWindow) {
-        emit mainWindow->debugSignal(msg);
+        emit mainWindow->debugSignal(QString("%1 %2").arg(prefix).arg(msg));
     }
+
+    if (type == QtFatalMsg) abort();
 }
 
 // ============================================================
@@ -48,36 +61,69 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // إعداد نافذة Debug Console
+
+    // ─── 1. إعداد معالج Debug ──────────────────────────────
+    qInstallMessageHandler(debugMessageHandler);
+
+    // ─── 2. إعداد الواجهات ──────────────────────────────────
     setupDebugConsole();
+    setupUI();
 
-    // ربط الأزرار
-    connect(ui->fileselection, &QPushButton::clicked, this, &MainWindow::onChooseFileClicked);
-    connect(ui->chooseadestination, &QPushButton::clicked, this, &MainWindow::onChooseDestinationClicked);
-    connect(ui->startextract, &QPushButton::clicked, this, &MainWindow::onExtractClicked);
-    connect(ui->nightmode, &QPushButton::clicked, this, &MainWindow::toggleNightMode);
+    // ─── 3. ربط الأزرار الرئيسية ────────────────────────────
+    connect(ui->fileselection, &QPushButton::clicked,
+            this, &MainWindow::onChooseFileClicked);
+    connect(ui->chooseadestination, &QPushButton::clicked,
+            this, &MainWindow::onChooseDestinationClicked);
+    connect(ui->startextract, &QPushButton::clicked,
+            this, &MainWindow::onExtractClicked);
+    connect(ui->settings, &QPushButton::clicked,
+            this, &MainWindow::onSettingsClicked);
+    connect(ui->supportButton, &QPushButton::clicked,
+            this, &MainWindow::onSupportClicked);
 
-    // ربط زر Debug Console
-    connect(ui->debugconsole, &QPushButton::clicked, this, [=]() {
+    // ─── 4. زر Debug Console (تبديل الإظهار/الإخفاء) ────────
+    connect(ui->debugconsole, &QPushButton::clicked, this, [this]() {
         debugDock->setVisible(!debugDock->isVisible());
     });
 
-    // ربط إشارة Debug
-    connect(this, &MainWindow::debugSignal, this, &MainWindow::appendDebugMessage);
+    // ─── 5. ربط إشارة Debug ─────────────────────────────────
+    connect(this, &MainWindow::debugSignal,
+            this, &MainWindow::appendDebugMessage);
 
-    // تعيين مجلد افتراضي للوجهة
-    ui->destinationLineEdit->setText(QDir::homePath() + "/extracted");
-
-    // تعيين حجم النافذة وعنوانها
+    // ─── 6. الإعدادات الافتراضية للنافذة ────────────────────
     setFixedSize(900, 600);
     setWindowTitle("FlatExtract");
+    setWindowIcon(QIcon(":/Icon App/FlatExtract-Base.png"));
 
-    // تطبيق التصميم
-     setupUI();
+    // ✅ تعيين مجلد افتراضي للوجهة (إذا لم يتم تعيينه سابقاً)
+    ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/output");
+
+    // ─── 7. تطبيق الإعدادات المحفوظة ────────────────────────
+    applySettings();
 }
+
+// ============================================================
+// المُدمر
+// ============================================================
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+// ============================================================
+// دوال عامة
+// ============================================================
+
+QStatusBar* MainWindow::getStatusBar() const { return ui->statusbar; }
+QProgressBar* MainWindow::getProgressBar() const { return ui->progressBar; }
+
+// ============================================================
+// دوال Debug Console
+// ============================================================
+
 void MainWindow::setupDebugConsole()
 {
-    // إعداد نافذة Debug Console
     debugDock = new QDockWidget("Debug Console", this);
     debugDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 
@@ -88,255 +134,230 @@ void MainWindow::setupDebugConsole()
 
     debugDock->setWidget(debugOutput);
     addDockWidget(Qt::BottomDockWidgetArea, debugDock);
-
     debugDock->setVisible(false);
 
-    // ربط إشارة Debug
     connect(this, &MainWindow::debugSignal, this, &MainWindow::appendDebugMessage);
-
-    // تثبيت معالج Debug (إذا كنت تستخدمه)
-    // qInstallMessageHandler(debugMessageHandler);
 }
 
-// ============================================================
-// المُدمر (Destructor)
-// ============================================================
-
-MainWindow::~MainWindow()
+void MainWindow::appendDebugMessage(const QString &msg)
 {
-    delete ui;
+    if (debugOutput) debugOutput->appendPlainText(msg);
 }
 
 // ============================================================
-// دوال عامة (Public Functions)
+// فتحات الأزرار
 // ============================================================
 
-QStatusBar* MainWindow::getStatusBar() const
-{
-    return ui->statusbar;
-}
-
-QProgressBar* MainWindow::getProgressBar() const
-{
-    return ui->progressBar;
-}
-
 // ============================================================
-// فتحات (Slots) للأزرار
+// اختيار الملف وعرض محتوياته
 // ============================================================
-
-// ─── اختيار الملف ─────────────────────────────────────────────
 
 void MainWindow::onChooseFileClicked()
 {
     debugFunctionStart("onChooseFileClicked");
 
-    // 1. اختيار الملف
+    // ─── 1. اختيار الملف ──────────────────────────────────
     QString filePath = QFileDialog::getOpenFileName(
         this,
-        "اختر ملف مضغوط أو ISO",
+        tr("اختر ملف مضغوط أو ISO"),
         QDir::homePath(),
-        "All Supported (*.zip *.7z *.tar.gz *.tar.bz2 *.tar.xz *.iso);;ZIP Files (*.zip);;ISO Files (*.iso);;All Files (*)"
+        tr("All Supported (*.zip *.7z *.tar.gz *.tar.bz2 *.tar.xz *.iso);;"
+           "ZIP Files (*.zip);;ISO Files (*.iso);;All Files (*)")
         );
 
     if (filePath.isEmpty()) {
-        debugError("لم يتم اختيار ملف");
+        debugError(tr("لم يتم اختيار ملف"));
         debugFunctionEnd("onChooseFileClicked");
         return;
     }
 
+    // ─── 2. عرض المسار في الحقل ──────────────────────────
     ui->filepathlineEdit->setText(filePath);
     debugVariable("File Path", filePath);
     debugFileInfo(filePath);
 
-    // 2. تحديد نوع الملف
-    QString suffix = QFileInfo(filePath).suffix().toLower();
-    qDebug() << "🔍 File suffix:" << suffix;
+    // ─── 3. تحديث مجلد الوجهة الافتراضي ──────────────────
+    QFileInfo fileInfo(filePath);
+    QString baseName = fileInfo.baseName();
+    ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/" + baseName);
 
+    // ─── 4. قراءة المحتويات حسب نوع الملف ────────────────
+    QString suffix = QFileInfo(filePath).suffix().toLower();
     QStringList files;
     QString errorMessage;
 
-    // 3. استدعاء الدالة المناسبة حسب النوع
     if (suffix == "iso") {
-        qDebug() << "📀 ISO file detected, using getIsoContents...";
         files = getIsoContents(filePath, errorMessage);
-        if (!errorMessage.isEmpty()) {
-            QMessageBox::warning(this, "خطأ", errorMessage);
-            debugFunctionEnd("onChooseFileClicked");
-            return;
-        }
     } else {
-        qDebug() << "📦 Archive file detected, using getArchiveContents...";
         files = getArchiveContents(filePath, errorMessage);
-        if (!errorMessage.isEmpty()) {
-            QMessageBox::warning(this, "خطأ", errorMessage);
-            debugFunctionEnd("onChooseFileClicked");
-            return;
-        }
     }
 
-    // 4. عرض النتائج في listWidgetBefore
+    if (!errorMessage.isEmpty()) {
+        QMessageBox::warning(this, tr("خطأ"), errorMessage);
+        debugFunctionEnd("onChooseFileClicked");
+        return;
+    }
+
+    // ─── 5. عرض النتائج في القائمة ───────────────────────
     ui->listWidgetBefore->clear();
-    ui->listWidgetBefore->addItem("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    ui->listWidgetBefore->addItem("📁 " + QFileInfo(filePath).fileName());
-    ui->listWidgetBefore->addItem("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    ui->listWidgetBefore->addItem(tr("📁 %1").arg(QFileInfo(filePath).fileName()));
 
     if (files.isEmpty()) {
-        ui->listWidgetBefore->addItem("⚠️ لا توجد ملفات");
+        ui->listWidgetBefore->addItem(tr("⚠️ لا توجد ملفات"));
     } else {
-        ui->listWidgetBefore->addItem("📊 عدد الملفات: " + QString::number(files.size()));
-        ui->listWidgetBefore->addItem("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        ui->listWidgetBefore->addItem(tr("📊 عدد الملفات: %1").arg(files.size()));
         for (const QString &file : files) {
-            ui->listWidgetBefore->addItem("📄 " + file);
+            ui->listWidgetBefore->addItem(tr("📄 %1").arg(file));
         }
     }
 
-    // 5. تحديث StatusBar
-    showStatusMessage(ui->statusbar, " تم تحميل " + QString::number(files.size()) + " ملف", 5000);
+    // ─── 6. تحديث شريط الحالة ────────────────────────────
+    showStatusMessage(ui->statusbar,
+                      tr("تم تحميل %1 ملف").arg(files.size()), 5000);
 
     debugFileList("Files in archive", files);
     debugFunctionEnd("onChooseFileClicked");
 }
 
-// ─── اختيار مجلد الوجهة ──────────────────────────────────────
+// ============================================================
+// اختيار مجلد الوجهة (Destination)
+// ============================================================
 
 void MainWindow::onChooseDestinationClicked()
 {
     debugFunctionStart("onChooseDestinationClicked");
 
+    // 1. فتح نافذة اختيار مجلد
     QString folderPath = QFileDialog::getExistingDirectory(
         this,
-        "Choose a Destination",
-        QDir::homePath(),
-        QFileDialog::ShowDirsOnly
+        tr("Choose a Destination"),      // عنوان النافذة (قابل للترجمة)
+        QDir::homePath(),                // المجلد الافتراضي (مجلد المستخدم)
+        QFileDialog::ShowDirsOnly        // عرض المجلدات فقط
         );
 
+    // 2. إذا اختار المستخدم مجلداً
     if (!folderPath.isEmpty()) {
+        // عرض المسار في حقل النص
         ui->destinationLineEdit->setText(folderPath);
+
+        // عرض المجلد في القائمة (جاهز للاستخراج)
         ui->listWidgetAfter->clear();
-        ui->listWidgetAfter->addItem("📁 " + folderPath + " جاهز للاستخراج");
+        ui->listWidgetAfter->addItem(tr("📁 %1 جاهز للاستخراج").arg(folderPath));
+
+        // تسجيل في الـ Debug
         debugVariable("Destination Folder", folderPath);
     }
 
     debugFunctionEnd("onChooseDestinationClicked");
 }
 
-// ─── استخراج الملفات ─────────────────────────────────────────
+
+// ============================================================
+// استخراج الملفات (مع خيط منفصل)
+// ============================================================
 
 void MainWindow::onExtractClicked()
 {
     debugFunctionStart("onExtractClicked");
 
+    // ─── 1. قراءة مسار الملف ──────────────────────────────
     QString filePath = ui->filepathlineEdit->text();
     if (filePath.isEmpty()) {
         debugError("لم يتم اختيار ملف");
-        QMessageBox::warning(this, "خطأ", "الرجاء اختيار ملف مضغوط أولاً");
+        QMessageBox::warning(this, tr("خطأ"), tr("الرجاء اختيار ملف مضغوط أولاً"));
         debugFunctionEnd("onExtractClicked");
         return;
     }
 
+    // ─── 2. تحديد مجلد الوجهة ──────────────────────────────
     QString outputPath = ui->destinationLineEdit->text();
     if (outputPath.isEmpty()) {
-        QDir outputDir = QFileInfo(filePath).absoluteDir();
-        outputPath = outputDir.absolutePath() + "/extracted";
+        // ✅ استخدم اسم الملف كمجلد افتراضي
+        QFileInfo fileInfo(filePath);
+        QString baseName = fileInfo.baseName();
+        outputPath = QDir::homePath() + "/Desktop/" + baseName;
     }
     debugVariable("Output Path", outputPath);
 
-    QString suffix = QFileInfo(filePath).suffix().toLower();
-    qDebug() << "🔍 Extract - File suffix:" << suffix;
+    // ─── 3. تعطيل الزر ومنع التكرار ─────────────────────────
+    ui->startextract->setEnabled(false);
+    ui->startextract->setText(tr(" Extracting... "));
 
-    QString errorMessage;
-    bool success = false;
+    // ─── 4. تهيئة شريط التقدم ──────────────────────────────
+    initProgressBar(ui->progressBar, 0);
+    setProgressBarVisible(ui->progressBar, true);
+    showExtractStart(ui->statusbar);
 
-    if (suffix == "iso") {
-        qDebug() << "📀 Extracting ISO file...";
-        success = extractAllFromIso(filePath, outputPath, errorMessage);
-    } else {
-        success = extractArchiveWithProgress(filePath, outputPath, errorMessage, this);
-    }
+    // ─── 5. إنشاء وتجهيز الخيط ─────────────────────────────
+    ExtractThread *thread = new ExtractThread(this);
+    thread->setData(filePath, outputPath);
 
-    if (!success) {
-        ui->statusbar->showMessage("❌ فشل الاستخراج: " + errorMessage, 5000);
-        debugError(errorMessage);
-        QMessageBox::critical(this, "خطأ", errorMessage);
-        debugFunctionEnd("onExtractClicked");
-        return;
-    }
+    // ─── 6. ربط إشارة الانتهاء ─────────────────────────────
+    connect(thread, &ExtractThread::finished, this,
+            [this, outputPath](bool success, const QString &message) {
 
-    // عرض الملفات المستخرجة
-    QDir extractedDir(outputPath);
-    QStringList files = extractedDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+                // إعادة تفعيل الزر
+                ui->startextract->setEnabled(true);
+                ui->startextract->setText(tr(" Start Extract "));
 
-    if (files.isEmpty()) {
-        QDirIterator it(outputPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-        while (it.hasNext()) {
-            it.next();
-            files << it.fileInfo().absoluteFilePath();
-        }
-    }
+                // إخفاء شريط التقدم
+                resetProgressBar(ui->progressBar);
 
-    debugFileList("Extracted files", files);
+                if (success) {
+                    // عرض الملفات المستخرجة
+                    QDir extractedDir(outputPath);
+                    QStringList files = extractedDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
 
-    ui->listWidgetAfter->clear();
-    ui->listWidgetAfter->addItem("📁 " + outputPath + " (تمت العملية)");
+                    if (files.isEmpty()) {
+                        QDirIterator it(outputPath, QDir::Files | QDir::NoDotAndDotDot,
+                                        QDirIterator::Subdirectories);
+                        while (it.hasNext()) {
+                            it.next();
+                            files << it.fileInfo().absoluteFilePath();
+                        }
+                    }
 
-    if (files.isEmpty()) {
-        ui->listWidgetAfter->addItem("⚠️ لا توجد ملفات مستخرجة");
-    } else {
-        for (const QString &file : files) {
-            ui->listWidgetAfter->addItem("📄 " + file + " (تمت العملية)");
-        }
-    }
+                    showExtractEnd(ui->statusbar, files.size());
 
-    ui->statusbar->showMessage("✅ تم استخراج " + QString::number(files.size()) + " ملف/مجلد بنجاح", 7000);
-    QMessageBox::information(this, "نجاح", "تم استخراج الملفات بنجاح إلى:\n" + outputPath);
+                    ui->listWidgetAfter->clear();
+                    ui->listWidgetAfter->addItem(tr("📁 %1 (تمت العملية)").arg(outputPath));
 
-    // stfs
-    StfsReader stfs;
-    QString stfsPath = outputPath + "/Content/0000000000000000/584111F7/000D0000/49AAD81B9FCDA45E4A03D71BFCB353F8FADB236C58";
-    if (stfs.Open(stfsPath.toStdString())) {
-        qDebug() << "STFS Title:" << QString::fromStdString(stfs.GetDisplayName());
-        auto files = stfs.ListAllFiles();
-        qDebug() << "STFS contains" << files.size() << "entries";
-        for (auto &f : files) {
-            qDebug() << QString::fromStdString(f.path) << f.fileSize << (f.isDirectory ? "[DIR]" : "");
-        }
+                    if (files.isEmpty()) {
+                        ui->listWidgetAfter->addItem(tr("⚠️ لا توجد ملفات مستخرجة"));
+                    } else {
+                        for (const QString &file : files) {
+                            ui->listWidgetAfter->addItem(tr("📄 %1 (تمت العملية)").arg(file));
+                        }
+                    }
 
-        // ---- NEW: extraction test, placed right here, still inside the same if-block ----
-        for (auto &f : files) {
-            if (f.path == "res\\gui\\gui.png") {
-                std::vector<uint8_t> data;
-                if (stfs.ExtractFile(f, data)) {
-                    qDebug() << "Extracted" << QString::fromStdString(f.path)
-                             << "- got" << data.size() << "bytes, expected" << f.fileSize;
+                    QMessageBox::information(this, tr("تمت العملية بنجاح "),
+                                             tr("تم استخراج الملفات بنجاح إلى:\n%1").arg(outputPath));
 
-                    QString outPath = outputPath + "/test_gui.png";
-                    std::ofstream out(outPath.toStdString(), std::ios::binary);
-                    out.write((const char*)data.data(), (std::streamsize)data.size());
-                    out.close();
                 } else {
-                    qDebug() << "Extraction failed for" << QString::fromStdString(f.path);
+                    ui->statusbar->showMessage(tr("❌ فشل الاستخراج: %1").arg(message), 5000);
+                    QMessageBox::critical(this, tr("خطأ"), message);
                 }
-                break;
-            }
-        }
-        // ---- END extraction test ----
 
-    } else {
-        qDebug() << "Failed to open STFS package";
-    }
+                // تنظيف الخيط
+                sender()->deleteLater();
+                debugFunctionEnd("onExtractClicked");
+            });
 
+    // ─── 7. ربط تحديث التقدم ───────────────────────────────
+    connect(thread, &ExtractThread::progressUpdated, this,
+            [this](int current, int total) {
+                updateProgressBar(ui->progressBar, current, total);
+                ui->statusbar->showMessage(tr("استخراج %1/%2").arg(current).arg(total), 0);
+            });
+
+    // ─── 8. تشغيل الخيط ─────────────────────────────────────
+    thread->start();
     debugFunctionEnd("onExtractClicked");
 }
 
-void MainWindow::appendDebugMessage(const QString &msg)
-{
-    if (debugOutput) {
-        debugOutput->appendPlainText(msg);
-    }
-}
-
-// ─── البحث عن 7z ─────────────────────────────────────────────
+// ============================================================
+// البحث عن 7z
+// ============================================================
 
 QString MainWindow::find7zExecutable()
 {
@@ -354,11 +375,13 @@ QString MainWindow::find7zExecutable()
     return "";
 }
 
-// ─── تصميم الواجهة (UI Styling) ─────────────────────────────
+// ============================================================
+// تصميم الواجهة (UI Styling)
+// ============================================================
 
 void MainWindow::setupUI()
 {
-    // زر الاستخراج (أخضر بتدرج)
+    // زر الاستخراج (أخضر)
     ui->startextract->setStyleSheet(
         "QPushButton {"
         "   background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,"
@@ -379,41 +402,70 @@ void MainWindow::setupUI()
         "}"
         );
 
-    // زر اختيار الملف (أزرق)
     ui->fileselection->setStyleSheet(
         "QPushButton { background-color: #3498db; color: white; }"
         "QPushButton:hover { background-color: #2980b9; }"
         );
 
-    // زر اختيار الوجهة (أزرق)
     ui->chooseadestination->setStyleSheet(
         "QPushButton { background-color: #3498db; color: white; }"
         "QPushButton:hover { background-color: #2980b9; }"
         );
 
-    // زر Debug Console (أحمر)
     ui->debugconsole->setStyleSheet(
         "QPushButton { background-color: #FF0000; color: white; padding: 6px; }"
         "QPushButton:hover { background-color: #cc0000; }"
         );
 }
 
+// ============================================================
+// الإعدادات (Settings)
+// ============================================================
+
+void MainWindow::onSettingsClicked()
+{
+    SettingsDialog dialog(this);
+    dialog.resize(this->size());
+
+    connect(&dialog, &SettingsDialog::nightModeToggled, this, &MainWindow::enableNightMode);
+    connect(&dialog, &SettingsDialog::settingsApplied, this, &MainWindow::applySettings);
+
+    dialog.exec();
+}
+
+// ============================================================
+// تطبيق الإعدادات المحفوظة
+// ============================================================
+
+void MainWindow::applySettings()
+{
+    qDebug() << "🔵 [3] applySettings called!";
+
+    QSettings settings("NGF76", "FlatExtract");
+
+    bool nightMode = settings.value("NightMode", false).toBool();
+    enableNightMode(nightMode);
+
+    bool debugConsole = settings.value("DebugConsole", false).toBool();
+    if (debugDock) {
+        debugDock->setVisible(debugConsole);
+    }
+}
+
+// ============================================================
+// دوال Night Mode
+// ============================================================
 
 void MainWindow::toggleNightMode()
 {
     isNightMode = !isNightMode;
-
-    if (isNightMode) {
-        enableNightMode(true);  // ✅ تمرير true لتفعيل الوضع الليلي
-        ui->nightmode->setText("☀️ Light Mode");
-    } else {
-        enableNightMode(false); // ✅ تمرير false لإلغاء الوضع الليلي
-        ui->nightmode->setText("🌙 Night Mode");
-    }
+    enableNightMode(isNightMode);
 }
 
 void MainWindow::enableNightMode(bool enable)
 {
+    qDebug() << "🔵 [2] enableNightMode called with:" << enable;
+
     if (enable) {
         this->setStyleSheet(
             "QMainWindow { background-color: #1e1e1e; }"
@@ -430,5 +482,18 @@ void MainWindow::enableNightMode(bool enable)
         this->setStyleSheet("");
     }
 }
+
+void MainWindow::onSupportClicked()
+{
+    // ✅ رابط حسابك (غيِّر الرابط إلى رابطك)
+    QString url = "https://ngf76.github.io/";  // أو رابط حسابك على تويتر، يوتيوب، إلخ
+
+    // فتح الرابط في المتصفح الافتراضي
+    if (!QDesktopServices::openUrl(QUrl(url))) {
+        QMessageBox::warning(this, "خطأ", "تعذر فتح الرابط");
+    }
+}
+
+
 
 

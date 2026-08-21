@@ -19,6 +19,7 @@
 // 2. Includes (مكتبات المشروع)
 // ============================================================
 #include "tool.h"
+#include "settingsdialog.h"
 
 // ============================================================
 // 3. إعلان Ui::MainWindow
@@ -32,6 +33,7 @@ QT_END_NAMESPACE
 // ============================================================
 // 4. كلاس MainWindow
 // ============================================================
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -41,33 +43,32 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    // ─── دوال عامة للوصول إلى العناصر ───
+    // ─── دوال عامة ───
     QStatusBar* getStatusBar() const;
     QProgressBar* getProgressBar() const;
 
-    // ─── دالة عامة لإنشاء الكائن (اختياري) ───
-    static MainWindow* createInstance(QWidget *parent = nullptr) {
-        return new MainWindow(parent);
-    }
+    // ─── دوال Night Mode (عامة) ───
+    void enableNightMode(bool enable);
+    void toggleNightMode();
 
 private slots:
-    // ─── فتحات الأزرار ───
+    // ─── فتحات الأزرار الرئيسية ───
     void onChooseFileClicked();
     void onChooseDestinationClicked();
     void onExtractClicked();
+    void onSupportClicked();
 
-    // ─── فتحات إضافية ───
-    void toggleNightMode();
+    // ─── فتحات الإعدادات و Debug ───
+    void onSettingsClicked();
+    void applySettings();
     void appendDebugMessage(const QString &msg);
 
 signals:
-    // ─── إشارات Debug ───
     void debugSignal(const QString &msg);
 
 private:
     // ─── عناصر الواجهة ───
     Ui::MainWindow *ui;
-    void setupUI();
 
     // ─── نافذة Debug Console ───
     QDockWidget *debugDock;
@@ -75,7 +76,7 @@ private:
 
     // ─── دوال خاصة ───
     void setupDebugConsole();
-    void enableNightMode(bool enable);
+    void setupUI();
     QString find7zExecutable();
 
     // ─── متغيرات الحالة ───

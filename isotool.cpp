@@ -1,6 +1,7 @@
 // ============================================================
 // isotool.cpp
 // دوال التعامل مع ملفات ISO (Xbox 360 / XDVDFS) + استخراج حزم STFS تلقائياً
+// (نسخة محسّنة للذاكرة: كتابة مباشرة على القرص بدل تخزين كل ملف بالكامل في RAM)
 // ============================================================
 
 #include "isotool.h"
@@ -83,7 +84,7 @@ QStringList getIsoContents(const QString &isoPath, QString &errorMessage)
 }
 
 // ============================================================
-// 4. استخراج ملف واحد من ISO (بالمسار الكامل)
+// 4. استخراج ملف واحد من ISO (بالمسار الكامل) - كتابة مباشرة على القرص
 // ============================================================
 
 bool extractFileFromIso(const QString &isoPath, const QString &fileName, const QString &outputPath, QString &errorMessage)
@@ -129,28 +130,19 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
         return false;
     }
 
-    std::vector<uint8_t> data;
-    if (!iso.ExtractBySector(match->startSector, match->fileSize, data)) {
-        errorMessage = "خطأ في قراءة ملف ISO";
-        debugError(errorMessage);
-        debugFunctionEnd("extractFileFromIso");
-        return false;
-    }
-
     QString baseName = fileName;
     int lastSep = baseName.lastIndexOf('\\');
     if (lastSep >= 0) baseName = baseName.mid(lastSep + 1);
 
     QString fullOutputPath = outputPath + "/" + baseName;
-    std::ofstream out(fullOutputPath.toStdString(), std::ios::binary);
-    if (!out) {
-        errorMessage = "فشل في إنشاء الملف الناتج: " + fullOutputPath;
+
+    // Streaming write: bounded memory regardless of file size.
+    if (!iso.ExtractBySectorToDisk(match->startSector, match->fileSize, fullOutputPath.toStdString())) {
+        errorMessage = "خطأ في قراءة/كتابة ملف ISO";
         debugError(errorMessage);
         debugFunctionEnd("extractFileFromIso");
         return false;
     }
-    out.write((const char*)data.data(), (std::streamsize)data.size());
-    out.close();
 
     debugQuaZipResult("extractFileFromIso", true, fileName);
     debugFunctionEnd("extractFileFromIso");
@@ -159,9 +151,12 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
 
 // ============================================================
 // 5. استخراج كل الملفات من ISO + استخراج حزم STFS تلقائياً
+//    (كتابة مباشرة على القرص لكل ملف - لا يتم تحميل أي ملف بالكامل في RAM)
 // ============================================================
 
-bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QString &errorMessage)
+bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
+                       QString &errorMessage,
+                       ExtractProgressCallback progressCallback)
 {
     debugFunctionStart("extractAllFromIso");
     errorMessage.clear();
@@ -188,22 +183,14 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
 
     auto entries = iso.ListAllFiles();
 
-    // ADD these two lines:
     int xdvdfsTotal = 0;
     for (const auto &e : entries) if (!e.isDirectory) xdvdfsTotal++;
-    int currentIndex = 0;   // ADD
+    int currentIndex = 0;
 
     bool anySuccess = false;
-    uint64_t totalBytesWritten = 0;
 
     for (const auto &e : entries) {
         if (e.isDirectory) continue;
-
-        std::vector<uint8_t> data;
-        if (!iso.ExtractBySector(e.startSector, e.fileSize, data)) {
-            qDebug() << "❌ Failed to extract:" << QString::fromStdString(e.path);
-            continue;
-        }
 
         QString relPath = QString::fromStdString(e.path);
         relPath.replace('\\', '/');
@@ -212,24 +199,25 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
         QFileInfo fi(fullOutputPath);
         if (!QDir().mkpath(fi.absolutePath())) {
             qDebug() << "❌ Failed to create directory for:" << relPath;
+            currentIndex++;
+            if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
             continue;
         }
 
-        std::ofstream out(fullOutputPath.toStdString(), std::ios::binary);
-        if (!out) {
-            qDebug() << "❌ Failed to create output file:" << fullOutputPath;
+        // Streaming write directly to disk - bounded memory regardless of file size.
+        if (!iso.ExtractBySectorToDisk(e.startSector, e.fileSize, fullOutputPath.toStdString())) {
+            qDebug() << "❌ Failed to extract:" << relPath;
+            currentIndex++;
+            if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
             continue;
         }
-        out.write((const char*)data.data(), (std::streamsize)data.size());
-        out.close();
 
-        totalBytesWritten += data.size();
         anySuccess = true;
-        qDebug() << "✅ Extracted:" << relPath << "(" << data.size() << "bytes)";
+        qDebug() << "✅ Extracted:" << relPath << "(" << e.fileSize << "bytes)";
 
+        currentIndex++;
+        if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
     }
-
-    qDebug() << "Total XDVDFS bytes written:" << totalBytesWritten;
 
     if (!anySuccess) {
         errorMessage = ERROR_NO_FILES;
@@ -239,7 +227,6 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
     }
 
     // ---- Auto-detect and recursively extract any STFS packages ----
-
     for (const auto &e : entries) {
         if (e.isDirectory) continue;
 
@@ -255,23 +242,17 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
         qDebug() << "📦 STFS package detected:" << relPath
                  << "-" << QString::fromStdString(stfs.GetDisplayName());
 
-        // Extract into a sibling folder named "<file>_extracted"
         QString stfsOutDir = fullOutputPath + "_extracted";
         auto stfsFiles = stfs.ListAllFiles();
 
+        int stfsTotal = 0;
+        for (const auto &sf : stfsFiles) if (!sf.isDirectory) stfsTotal++;
+        int stfsIndex = 0;
+
         int stfsSuccessCount = 0;
-        uint64_t stfsBytesWritten = 0;
-
-
 
         for (const auto &sf : stfsFiles) {
             if (sf.isDirectory) continue;
-
-            std::vector<uint8_t> data;
-            if (!stfs.ExtractFile(sf, data)) {
-                qDebug() << "  ❌ Failed to extract STFS entry:" << QString::fromStdString(sf.path);
-                continue;
-            }
 
             QString sfRelPath = QString::fromStdString(sf.path);
             sfRelPath.replace('\\', '/');
@@ -280,23 +261,26 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath, QStrin
             QFileInfo sfInfo(sfFullPath);
             if (!QDir().mkpath(sfInfo.absolutePath())) {
                 qDebug() << "  ❌ Failed to create directory for:" << sfRelPath;
+                stfsIndex++;
+                if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
                 continue;
             }
 
-            std::ofstream sfOut(sfFullPath.toStdString(), std::ios::binary);
-            if (!sfOut) {
-                qDebug() << "  ❌ Failed to create output file:" << sfFullPath;
+            // Streaming write directly to disk - bounded memory regardless of file size.
+            if (!stfs.ExtractFileToDisk(sf, sfFullPath.toStdString())) {
+                qDebug() << "  ❌ Failed to extract STFS entry:" << sfRelPath;
+                stfsIndex++;
+                if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
                 continue;
             }
-            sfOut.write((const char*)data.data(), (std::streamsize)data.size());
-            sfOut.close();
 
             stfsSuccessCount++;
-            stfsBytesWritten += data.size();
+
+            stfsIndex++;
+            if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
         }
 
-        qDebug() << "  ✅ STFS extracted:" << stfsSuccessCount << "files,"
-                 << stfsBytesWritten << "bytes ->" << stfsOutDir;
+        qDebug() << "  ✅ STFS extracted:" << stfsSuccessCount << "files ->" << stfsOutDir;
     }
     // ---- END STFS auto-extraction ----
 

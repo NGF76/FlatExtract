@@ -1,6 +1,3 @@
-#ifndef ISO_READER_H
-#define ISO_READER_H
-
 // iso_reader.h
 #pragma once
 #include <cstdint>
@@ -8,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <algorithm>
+#include <unordered_set>
 #include <QDebug>
 
 // ===================== XDVDFS (Xbox 360 ISO) =====================
@@ -58,6 +55,8 @@ public:
                            rootDirSize_, targetName, outData);
     }
 
+    // In-memory extraction. For large files, prefer ExtractBySectorToDisk below
+    // to avoid buffering the whole file in RAM.
     bool ExtractBySector(uint32_t startSector, uint32_t fileSize,
                          std::vector<uint8_t>& outData) {
         uint64_t offset = baseOffset_ + (uint64_t)startSector * SECTOR_SIZE;
@@ -66,9 +65,32 @@ public:
         return true;
     }
 
+    // Streaming version: writes directly to disk in small chunks instead of
+    // buffering the whole file in RAM. Use this for extraction loops handling
+    // arbitrarily large files to keep peak memory bounded and constant.
+    bool ExtractBySectorToDisk(uint32_t startSector, uint32_t fileSize, const std::string& outPath) {
+        std::ofstream out(outPath, std::ios::binary);
+        if (!out) return false;
+
+        uint64_t offset = baseOffset_ + (uint64_t)startSector * SECTOR_SIZE;
+        uint32_t remaining = fileSize;
+        const size_t chunkSize = 1024 * 1024; // 1MB chunks
+        std::vector<uint8_t> buf(chunkSize);
+
+        while (remaining > 0) {
+            size_t toRead = remaining < chunkSize ? remaining : chunkSize;
+            ReadAt(offset, buf.data(), toRead);
+            out.write((const char*)buf.data(), (std::streamsize)toRead);
+            offset += toRead;
+            remaining -= (uint32_t)toRead;
+        }
+        out.close();
+        return true;
+    }
+
     std::vector<IsoFileEntry> ListAllFiles() {
         std::vector<IsoFileEntry> results;
-        visitedDirOffsets_.clear(); // reset cycle guard for a fresh walk
+        visitedDirOffsets_.clear();
         WalkDirectory(baseOffset_ + (uint64_t)rootDirSector_ * SECTOR_SIZE,
                       rootDirSize_, "", results, 0);
         return results;
@@ -80,10 +102,10 @@ private:
     uint64_t baseOffset_ = 0;
     uint32_t rootDirSector_ = 0;
     uint32_t rootDirSize_ = 0;
-    std::vector<uint64_t> visitedDirOffsets_; // cycle guard
+    std::vector<uint64_t> visitedDirOffsets_;
 
     void ReadAt(uint64_t offset, void* dst, size_t len) {
-        file_.clear(); // NEW: reset any fail/eof bits from a previous bad read
+        file_.clear();
         file_.seekg((std::streamoff)offset, std::ios::beg);
         file_.read((char*)dst, (std::streamsize)len);
     }
@@ -116,7 +138,6 @@ private:
             qDebug() << "Rejected candidate at" << base << "- root dir sector out of range";
             return false;
         }
-        //change 4096 to 32
         if (vd.RootDirSize < 32 || vd.RootDirSize > 64 * 1024 * 1024) {
             qDebug() << "Rejected candidate at" << base << "- implausible root dir size:" << vd.RootDirSize;
             return false;
@@ -140,7 +161,7 @@ private:
             std::streamsize got = file_.gcount();
             for (std::streamsize i = 0; i + 20 <= got; i++) {
                 uint64_t magicOffset = pos + (uint64_t)i;
-                if (magicOffset % SECTOR_SIZE != 0) continue; // NEW: skip unaligned matches
+                if (magicOffset % SECTOR_SIZE != 0) continue;
                 if (memcmp(buf.data() + i, XISO_MAGIC, 20) == 0) {
                     if (magicOffset >= 32ULL * SECTOR_SIZE) {
                         foundBaseOffset = magicOffset - 32ULL * SECTOR_SIZE;
@@ -212,91 +233,85 @@ private:
 
         for (uint64_t seen : visitedDirOffsets_) {
             if (seen == dirByteOffset) {
-                qDebug() << "Cycle detected (directory level), refusing to re-walk offset" << dirByteOffset;
-                return;
+                return; // cycle guard, silent
             }
         }
         visitedDirOffsets_.push_back(dirByteOffset);
 
         std::vector<uint8_t> table(dirSize);
         ReadAt(dirByteOffset, table.data(), dirSize);
-
-        std::vector<size_t> visitedEntries; // NEW: per-table cycle guard
-        WalkNode(table, 0, pathPrefix, results, depth, visitedEntries);
+        WalkNode(table, 0, pathPrefix, results, depth);
     }
 
-    void WalkNode(std::vector<uint8_t>& table, size_t entryOffset,
+    void WalkNode(std::vector<uint8_t>& table, size_t startEntryOffset,
                   const std::string& pathPrefix, std::vector<IsoFileEntry>& results,
-                  int depth, std::vector<size_t>& visitedEntries) {
-        if (entryOffset + sizeof(XisoDirEntry) > table.size()) {
-            qDebug() << "WalkNode: entryOffset out of range, stopping" << entryOffset;
-            return;
-        }
+                  int depth = 0) {
+        std::vector<size_t> stack;
+        stack.push_back(startEntryOffset);
 
-        // NEW: entry-level cycle guard
-        for (size_t seen : visitedEntries) {
-            if (seen == entryOffset) {
-                qDebug() << "Cycle detected (entry level) at offset" << entryOffset << "- stopping";
-                return;
+        // Track entries already processed IN THIS TABLE so a Left/Right cycle
+        // (entries pointing back at each other) can't cause the same entry to
+        // be re-added and re-processed indefinitely.
+        std::unordered_set<size_t> visitedEntries;
+
+        size_t visitGuard = 0;
+        const size_t maxVisits = table.size() / sizeof(XisoDirEntry) + 16; // can't exceed real entry count
+
+        while (!stack.empty()) {
+            if (++visitGuard > maxVisits) {
+                qDebug() << "WalkNode: visit guard exceeded (should not happen with entry dedup), aborting at"
+                         << QString::fromStdString(pathPrefix);
+                break;
             }
-        }
-        visitedEntries.push_back(entryOffset);
 
-        XisoDirEntry entry;
-        memcpy(&entry, table.data() + entryOffset, sizeof(entry));
+            size_t entryOffset = stack.back();
+            stack.pop_back();
 
-        if (entry.LeftOffset == 0xFFFF && entry.RightOffset == 0xFFFF && entry.NameLength == 0)
-            return;
+            if (visitedEntries.count(entryOffset)) continue; // already processed, skip
+            visitedEntries.insert(entryOffset);
 
-        size_t nameStart = entryOffset + sizeof(XisoDirEntry);
-        if (nameStart + entry.NameLength > table.size()) {
-            qDebug() << "WalkNode: name would read out of bounds, skipping entry at" << entryOffset;
-            return;
-        }
+            if (entryOffset + sizeof(XisoDirEntry) > table.size()) continue;
 
-        std::string name((char*)table.data() + nameStart, entry.NameLength);
-        qDebug() << "Entry:" << QString::fromStdString(name)
-                 << "attr=" << entry.Attributes << "size=" << entry.FileSize
-                 << "Left=" << entry.LeftOffset << "Right=" << entry.RightOffset;
+            XisoDirEntry entry;
+            memcpy(&entry, table.data() + entryOffset, sizeof(entry));
 
-        if (entry.LeftOffset != 0xFFFF) {
-            size_t leftOff = (size_t)entry.LeftOffset * 4;
-            if (leftOff + sizeof(XisoDirEntry) <= table.size()) {
-                WalkNode(table, leftOff, pathPrefix, results, depth, visitedEntries);
-            } else {
-                qDebug() << "WalkNode: LeftOffset out of range, skipping:" << entry.LeftOffset;
+            if (entry.LeftOffset == 0xFFFF && entry.RightOffset == 0xFFFF && entry.NameLength == 0)
+                continue;
+
+            size_t nameStart = entryOffset + sizeof(XisoDirEntry);
+            if (nameStart + entry.NameLength > table.size()) continue;
+
+            std::string name((char*)table.data() + nameStart, entry.NameLength);
+
+            bool isDirectory = (entry.Attributes & 0x10) != 0;
+            std::string fullPath = pathPrefix.empty() ? name : pathPrefix + "\\" + name;
+
+            IsoFileEntry fileEntry;
+            fileEntry.path = fullPath;
+            fileEntry.startSector = entry.StartSector;
+            fileEntry.fileSize = entry.FileSize;
+            fileEntry.isDirectory = isDirectory;
+            results.push_back(fileEntry);
+
+            if (isDirectory && entry.FileSize > 0 && entry.FileSize < 64 * 1024 * 1024) {
+                uint64_t subDirOffset = baseOffset_ + (uint64_t)entry.StartSector * SECTOR_SIZE;
+                if (subDirOffset + entry.FileSize <= fileSize_) {
+                    WalkDirectory(subDirOffset, entry.FileSize, fullPath, results, depth + 1);
+                }
             }
-        }
 
-
-        bool isDirectory = (entry.Attributes & 0x10) != 0;
-        std::string fullPath = pathPrefix.empty() ? name : pathPrefix + "\\" + name;
-
-        IsoFileEntry fileEntry;
-        fileEntry.path = fullPath;
-        fileEntry.startSector = entry.StartSector;
-        fileEntry.fileSize = entry.FileSize;
-        fileEntry.isDirectory = isDirectory;
-        results.push_back(fileEntry);
-
-        if (isDirectory && entry.FileSize > 0 && entry.FileSize < 64 * 1024 * 1024) {
-            uint64_t subDirOffset = baseOffset_ + (uint64_t)entry.StartSector * SECTOR_SIZE;
-            if (subDirOffset + entry.FileSize <= fileSize_) {
-                WalkDirectory(subDirOffset, entry.FileSize, fullPath, results, depth + 1);
-            } else {
-                qDebug() << "WalkNode: subdirectory out of file range, skipping:" << QString::fromStdString(fullPath);
+            if (entry.RightOffset != 0xFFFF) {
+                size_t rightOff = (size_t)entry.RightOffset * 4;
+                if (rightOff + sizeof(XisoDirEntry) <= table.size() && !visitedEntries.count(rightOff)) {
+                    stack.push_back(rightOff);
+                }
             }
-        }
-
-        if (entry.RightOffset != 0xFFFF) {
-            size_t rightOff = (size_t)entry.RightOffset * 4;
-            if (rightOff + sizeof(XisoDirEntry) <= table.size()) {
-                WalkNode(table, rightOff, pathPrefix, results, depth, visitedEntries);
-            } else {
-                qDebug() << "WalkNode: RightOffset out of range, skipping:" << entry.RightOffset;
+            if (entry.LeftOffset != 0xFFFF) {
+                size_t leftOff = (size_t)entry.LeftOffset * 4;
+                if (leftOff + sizeof(XisoDirEntry) <= table.size() && !visitedEntries.count(leftOff)) {
+                    stack.push_back(leftOff);
+                }
             }
         }
     }
 };
-
-#endif // ISO_READER_H

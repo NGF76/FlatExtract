@@ -53,6 +53,45 @@ public:
     }
 
     // Extracts file data by following the block chain (handles non-consecutive files).
+    // Extracts file data by following the block chain, writing directly to disk
+    // in small chunks instead of buffering the whole file in RAM. Use this for
+    // large files (audio, movies, textures) to avoid memory spikes.
+    bool ExtractFileToDisk(const StfsFileEntry& entry, const std::string& outPath) {
+        if (!headerValid_) return false;
+
+        std::ofstream out(outPath, std::ios::binary);
+        if (!out) return false;
+
+        uint32_t block = entry.startBlock;
+        uint32_t remaining = entry.fileSize;
+        int guard = 0;
+
+        while (remaining > 0 && block != 0xFFFFFF && guard < 200000) {
+            guard++;
+            uint64_t dataBlockNum = ComputeDataBlockNumber(block);
+            uint64_t byteOffset = BlockToOffset(dataBlockNum);
+            if (byteOffset + 0x1000 > fileSize_) return false;
+
+            uint32_t chunk = remaining < 0x1000 ? remaining : 0x1000;
+            uint8_t buf[0x1000]; // stack buffer, not heap - no accumulation
+            ReadAt(byteOffset, buf, 0x1000);
+            out.write((const char*)buf, chunk);
+            remaining -= chunk;
+
+            if (remaining == 0) break;
+
+            if (entry.blocksConsecutive) {
+                block = block + 1;
+            } else {
+                uint32_t nextBlock = ReadNextBlockFromHashTable(block);
+                if (nextBlock == 0xFFFFFF || nextBlock == block) break;
+                block = nextBlock;
+            }
+        }
+        out.close();
+        return true;
+    }
+
     bool ExtractFile(const StfsFileEntry& entry, std::vector<uint8_t>& outData) {
         if (!headerValid_) return false;
         outData.clear();
@@ -94,6 +133,41 @@ public:
                              << (int)outData.size() << "of" << entry.fileSize << "bytes";
                     break;
                 }
+                block = nextBlock;
+            }
+        }
+        return true;
+    }
+
+    // Streams the file directly to an already-open output stream, block by block,
+    // instead of buffering the whole file in memory first. Keeps peak RAM usage
+    // bounded to ~4KB per file regardless of file size.
+    bool ExtractFileToStream(const StfsFileEntry& entry, std::ofstream& out) {
+        if (!headerValid_) return false;
+
+        uint32_t block = entry.startBlock;
+        uint32_t remaining = entry.fileSize;
+        int guard = 0;
+        std::vector<uint8_t> buf(0x1000);
+
+        while (remaining > 0 && block != 0xFFFFFF && guard < 200000) {
+            guard++;
+            uint64_t dataBlockNum = ComputeDataBlockNumber(block);
+            uint64_t byteOffset = BlockToOffset(dataBlockNum);
+            if (byteOffset + 0x1000 > fileSize_) return false;
+
+            uint32_t chunk = remaining < 0x1000 ? remaining : 0x1000;
+            ReadAt(byteOffset, buf.data(), 0x1000);
+            out.write((const char*)buf.data(), chunk); // write immediately, don't accumulate
+            remaining -= chunk;
+
+            if (remaining == 0) break;
+
+            if (entry.blocksConsecutive) {
+                block = block + 1;
+            } else {
+                uint32_t nextBlock = ReadNextBlockFromHashTable(block);
+                if (nextBlock == 0xFFFFFF || nextBlock == block) break;
                 block = nextBlock;
             }
         }

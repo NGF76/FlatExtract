@@ -8,6 +8,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(RESOURCES resources.qrc)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
@@ -53,6 +54,7 @@ else()
             ${SOURCES}
             ${HEADERS}
             ${HEADERS_UTILITYXEX}
+            ${RESOURCES}
             resources.qrc
             tool.h
             tool.cpp
@@ -69,10 +71,16 @@ else()
             iso_reader.h
             xex_parser.h
             stfs_reader.h
-            analysis.c
-            analysis.h
+            checkfile.cpp
+            checkfile.h
             genrate.cpp
             UtilityXex/genrated.h
+            settingsdialog.h settingsdialog.cpp settingsdialog.ui
+            extractthread.h extractthread.cpp
+            threadhub.cpp
+            threadhub.h
+
+
 
 
 
@@ -170,4 +178,5 @@ endif()
 
 ##conecnt Folder to Project
 include_directories(UtilityXex)
+
 

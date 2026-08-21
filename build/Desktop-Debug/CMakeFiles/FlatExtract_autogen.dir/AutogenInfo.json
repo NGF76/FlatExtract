@@ -96,15 +96,21 @@
 			null
 		],
 		[
-			"/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.h",
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.h",
 			"MU",
-			"EWIEGA46WW/moc_analysis.cpp",
+			"EWIEGA46WW/moc_checkfile.cpp",
 			null
 		],
 		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.h",
 			"MU",
 			"EWIEGA46WW/moc_debughelper.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/extractthread.h",
+			"MU",
+			"EWIEGA46WW/moc_extractthread.cpp",
 			null
 		],
 		[
@@ -138,9 +144,21 @@
 			null
 		],
 		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.h",
+			"MU",
+			"EWIEGA46WW/moc_settingsdialog.cpp",
+			null
+		],
+		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/stfs_reader.h",
 			"MU",
 			"EWIEGA46WW/moc_stfs_reader.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.h",
+			"MU",
+			"EWIEGA46WW/moc_threadhub.cpp",
 			null
 		],
 		[
@@ -212,8 +230,9 @@
 	"SOURCES" : 
 	[
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp", "MU", null ],
-		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/analysis.c", "MU", null ],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.cpp", "MU", null ],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/extractthread.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/genrate.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/main.cpp", "MU", null ],
@@ -224,6 +243,12 @@
 			"MU",
 			null
 		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.cpp",
+			"MU",
+			null
+		],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],

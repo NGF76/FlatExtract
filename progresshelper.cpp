@@ -1,6 +1,6 @@
 // ============================================================
 // progresshelper.cpp
-// دوال التقدم والحالة
+// دوال التقدم (Progress Bar) والحالة (Status Bar)
 // ============================================================
 
 #include "progresshelper.h"
@@ -10,14 +10,13 @@
 #include <QDebug>
 
 // ============================================================
-// دوال Status Bar
+// دوال Status Bar (شريط الحالة)
 // ============================================================
 
 void showStatusMessage(QStatusBar *statusBar, const QString &message, int timeout)
 {
-    if (statusBar) {
-        statusBar->showMessage(message, timeout);
-    }
+    if (!statusBar) return;
+    statusBar->showMessage(message, timeout);
 }
 
 void showExtractStart(QStatusBar *statusBar)
@@ -47,7 +46,7 @@ void updateExtractStatus(QStatusBar *statusBar, const QString &current, int inde
 }
 
 // ============================================================
-// دوال Progress Bar
+// دوال Progress Bar (شريط التقدم)
 // ============================================================
 
 void initProgressBar(QProgressBar *progressBar, int max)
@@ -71,6 +70,7 @@ void setProgressValue(QProgressBar *progressBar, int value)
 void resetProgressBar(QProgressBar *progressBar)
 {
     if (!progressBar) return;
+
     qDebug() << "[DEBUG] resetProgressBar called!";
     progressBar->setValue(0);
     progressBar->setVisible(false);
@@ -94,7 +94,7 @@ void updateProgressBar(QProgressBar *progressBar, int value, int max)
     if (!progressBar) return;
 
     if (max <= 0) {
-        progressBar->setRange(0, 0);  // وضع غير محدد
+        progressBar->setRange(0, 0);  // وضع غير محدد (Indeterminate)
         return;
     }
 

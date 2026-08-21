@@ -3,11 +3,15 @@
 // نقطة الدخول الرئيسية للتطبيق
 // ============================================================
 
+#include <QFontDatabase>
 #include <QApplication>
+#include <QIcon>
+#include <QDebug>
 #include "mainwindow.h"
 #include "Xtool.h"
 #include "xex_parser.h"
 #include "iso_reader.h"
+
 
 /**
  * @brief الدالة الرئيسية (Entry Point)
@@ -20,10 +24,18 @@ int main(int argc, char *argv[])
     // 1. إنشاء كائن التطبيق
     QApplication app(argc, argv);
 
+
     // 2. إنشاء النافذة الرئيسية عبر الدالة الثابتة
-    MainWindow *mainWindow = MainWindow::createInstance();
-    mainWindow->show();
+
+    //mainWindow->show();
+
+    // تحميل الخطوط
+
 
     // 3. تشغيل حلقة الأحداث
+    MainWindow w;
+    w.show();
     return app.exec();
 }
+
+
