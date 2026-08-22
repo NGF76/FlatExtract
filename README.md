@@ -42,20 +42,35 @@ IMPORTANT NOTE !!!!!!!
 
 ## Libraries Used
 
-This project uses the following open-source libraries:
+This product includes software developed by the following open-source projects:
 
-- **Qt** - Cross-platform application framework (LGPL v2.1 / v3)  
-  [https://www.qt.io](https://www.qt.io)
+1. Qt Framework
+   - License: GNU Lesser General Public License (LGPL) v2.1 or v3
+   - Source: https://www.qt.io
 
-- **QuaZIP** - Qt/C++ library for ZIP archives (LGPL v2.1+)  
-  [https://quazip.sourceforge.net](https://quazip.sourceforge.net)
+2. QuaZIP / QuaZIP5
+   - License: GNU Lesser General Public License (LGPL) v2.1+
+   - Source: https://quazip.sourceforge.net
 
-- **zlib** - Compression library (zlib/libpng license)  
-  [https://zlib.net](https://zlib.net)
+3. zlib (ZIP compression library)
+   - License: zlib/libpng License
+   - Source: https://zlib.net
 
-- **libcdio / libiso9660** - CD-ROM and ISO file system access (GPL / LGPL)  
-  [https://www.gnu.org/software/libcdio](https://www.gnu.org/software/libcdio)
+4. libcdio
+   - License: GNU General Public License (GPL) v2+ or LGPL v2.1+
+   - Source: https://www.gnu.org/software/libcdio
 
+5. libcdio++ (CDIOPP)
+   - License: GNU General Public License (GPL) v2+ or LGPL v2.1+
+   - Source: https://www.gnu.org/software/libcdio
+
+6. libiso9660
+   - License: GNU General Public License (GPL) v2+ or LGPL v2.1+
+   - Source: https://www.gnu.org/software/libcdio (part of libcdio project)
+
+7. Radare2 (R2)
+   - License: GNU Lesser General Public License (LGPL) v3
+   - Source: https://www.radare.org
 ---
 
 ### License Compliance
