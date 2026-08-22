@@ -35,3 +35,33 @@ Developed by NGF76, this application is completely free and open source. Check t
 2. Make it executable:
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
+
+---
+
+IMPORTANT NOTE !!!!!!!
+
+## Libraries Used
+
+This project uses the following open-source libraries:
+
+- **Qt** - Cross-platform application framework (LGPL v2.1 / v3)  
+  [https://www.qt.io](https://www.qt.io)
+
+- **QuaZIP** - Qt/C++ library for ZIP archives (LGPL v2.1+)  
+  [https://quazip.sourceforge.net](https://quazip.sourceforge.net)
+
+- **zlib** - Compression library (zlib/libpng license)  
+  [https://zlib.net](https://zlib.net)
+
+- **libcdio / libiso9660** - CD-ROM and ISO file system access (GPL / LGPL)  
+  [https://www.gnu.org/software/libcdio](https://www.gnu.org/software/libcdio)
+
+---
+
+### License Compliance
+
+FlatExtract is licensed under the **MIT License**.  
+However, it uses libraries under other open-source licenses (LGPL, GPL).  
+These libraries are dynamically linked and can be replaced by the user, in compliance with their respective licenses.
+
+For more details, see the `LICENSE` file and the individual library licenses.
