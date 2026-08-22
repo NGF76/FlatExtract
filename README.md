@@ -20,18 +20,18 @@ FlatExtract is a simple and powerful desktop application written in C++ using th
 
 ---
 
+Developer By NGF76
 
+Developed by NGF76, this application is completely free and open source. Check the license file to learn more. 
+
+
+---
 ## Installation and Usage
 
 ### Running the Application Directly (AppImage)
 
 1. Download the `FlatExtract-x86_64.AppImage` file from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
-
-
-Developer By NGF76
-
-Developed by NGF76, this application is completely free and open source. Check the license file to learn more.
-3. Make it executable:
+2. Make it executable:
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
