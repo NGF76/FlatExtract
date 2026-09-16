@@ -38,6 +38,39 @@ Developed by NGF76, this application is completely free and open source. Check t
 
 ---
 
+# FlatExtract v1.0.0
+
+## What's New in This Release
+
+- Added support for extracting 7z, TAR, GZ, BZ2, XZ, and RAR archives using the bundled 7z tool.
+- Bundled the 7z executable within the application, so users no longer need to install it manually.
+- Display the original file size in the file list.
+- Display the number of files inside the archive before extraction.
+- Display the total size of extracted files after the operation.
+- Improved display of file names (without full paths) for easier reading.
+- Added a Support button that opens the GitHub page.
+- Fixed issues with archive content parsing.
+- Improved application stability during extraction.
+
+---
+
+## Disclaimer
+
+This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+
+In no event shall the developer be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
+
+This application uses the 7-Zip tool developed by Igor Pavlov, licensed under GNU LGPL. For more information, please visit:
+https://www.7-zip.org
+
+This application uses the QuaZIP library, licensed under GNU LGPL.
+This application uses the libcdio / libiso9660 library, licensed under GNU GPL / LGPL.
+This application uses the Qt framework, licensed under GNU LGPL.
+
+The user is responsible for ensuring that their use of archives and files complies with all applicable local and international laws.
+
+---
+
 IMPORTANT NOTE !!!!!!!
 
 ## Libraries Used
