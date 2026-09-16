@@ -75,9 +75,12 @@ private:
     QPlainTextEdit *debugOutput;
 
     // ─── دوال خاصة ───
+    void dropEvent(QDropEvent *event);
+    void onRemoveClicked();
     void setupDebugConsole();
     void setupUI();
     QString find7zExecutable();
+    QString formatSize(qint64 size);
 
     // ─── متغيرات الحالة ───
     bool isNightMode = false;

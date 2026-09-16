@@ -12,8 +12,10 @@
 #include "progresshelper.h"
 #include "isotool.h"
 #include "extractthread.h"
+#include "Systemextract.h"
 
 #include <QFileDialog>
+#include <QWidget>
 #include <QSettings>
 #include <QMessageBox>
 #include <QDir>
@@ -24,7 +26,11 @@
 #include <QIcon>
 #include <QThread>
 #include <QDesktopServices>
+#include <QListWidgetItem>
 #include <QUrl>
+#include <QMimeData>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 
 
 // ============================================================
@@ -67,10 +73,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ─── 2. إعداد الواجهات ──────────────────────────────────
     setupDebugConsole();
-    setupUI();
+    //setupUI();
 
     // ─── 3. ربط الأزرار الرئيسية ────────────────────────────
-    connect(ui->fileselection, &QPushButton::clicked,
+    connect(ui->addfiles, &QPushButton::clicked,
             this, &MainWindow::onChooseFileClicked);
     connect(ui->chooseadestination, &QPushButton::clicked,
             this, &MainWindow::onChooseDestinationClicked);
@@ -80,22 +86,28 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onSettingsClicked);
     connect(ui->supportButton, &QPushButton::clicked,
             this, &MainWindow::onSupportClicked);
+    // زر الحذف الملفات من القائمة
+    //connect(ui->removeButton, &QPushButton::clicked, this, &MainWindow::onRemoveClicked);
 
     // ─── 4. زر Debug Console (تبديل الإظهار/الإخفاء) ────────
     connect(ui->debugconsole, &QPushButton::clicked, this, [this]() {
         debugDock->setVisible(!debugDock->isVisible());
     });
+    // ---------------- السحب و الافلات ------------------
+    ui->listWidgetBefore->setAcceptDrops(true);
+    setAcceptDrops(true);  // للنافذة الرئيسية
+
 
     // ─── 5. ربط إشارة Debug ─────────────────────────────────
     connect(this, &MainWindow::debugSignal,
             this, &MainWindow::appendDebugMessage);
 
     // ─── 6. الإعدادات الافتراضية للنافذة ────────────────────
-    setFixedSize(900, 600);
+    setFixedSize(1000, 700);
     setWindowTitle("FlatExtract");
     setWindowIcon(QIcon(":/Icon App/FlatExtract-Base.png"));
 
-    // ✅ تعيين مجلد افتراضي للوجهة (إذا لم يتم تعيينه سابقاً)
+    //  تعيين مجلد افتراضي للوجهة (إذا لم يتم تعيينه سابقاً)
     ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/output");
 
     // ─── 7. تطبيق الإعدادات المحفوظة ────────────────────────
@@ -144,6 +156,23 @@ void MainWindow::appendDebugMessage(const QString &msg)
     if (debugOutput) debugOutput->appendPlainText(msg);
 }
 
+
+// دالة تنسيق الحجم
+QString MainWindow::formatSize(qint64 size){
+    if (size < 1024){
+        return QString::number(size) + " B";
+    }
+    else if(size < 1024 * 1024){
+        return QString::number(size / 1024.0, 'f', 1) + "KB";
+    }
+    else if (size < 1024 * 1024 * 1024) {
+        return QString::number(size / (1024.0 * 1024.0), 'f', 1) + "MB";
+    }
+    else{
+        return QString::number(size / (1024.0 * 1024.0 * 1024.0), 'f', 1) + " GB";
+    }
+}
+
 // ============================================================
 // فتحات الأزرار
 // ============================================================
@@ -159,14 +188,14 @@ void MainWindow::onChooseFileClicked()
     // ─── 1. اختيار الملف ──────────────────────────────────
     QString filePath = QFileDialog::getOpenFileName(
         this,
-        tr("اختر ملف مضغوط أو ISO"),
+        tr("Select a compressed file or an ISO file."),
         QDir::homePath(),
         tr("All Supported (*.zip *.7z *.tar.gz *.tar.bz2 *.tar.xz *.iso);;"
            "ZIP Files (*.zip);;ISO Files (*.iso);;All Files (*)")
         );
 
     if (filePath.isEmpty()) {
-        debugError(tr("لم يتم اختيار ملف"));
+        debugError(tr("No file selected."));
         debugFunctionEnd("onChooseFileClicked");
         return;
     }
@@ -186,34 +215,57 @@ void MainWindow::onChooseFileClicked()
     QStringList files;
     QString errorMessage;
 
-    if (suffix == "iso") {
+
+    if (suffix == "iso")
+    {
         files = getIsoContents(filePath, errorMessage);
-    } else {
+    } else if (suffix == "zip")
+    {
         files = getArchiveContents(filePath, errorMessage);
+    }else
+    {
+        files = getSystemArchiveContents(filePath, errorMessage);
     }
 
     if (!errorMessage.isEmpty()) {
-        QMessageBox::warning(this, tr("خطأ"), errorMessage);
+        QMessageBox::warning(this, tr("Error"), errorMessage);
         debugFunctionEnd("onChooseFileClicked");
         return;
     }
 
+
+    //─────────────────────── عرض الحجم في العنوان  ───────────────────────
+    // ─── حساب حجم الملف الأصلي ─────────────────────────// ADD New
+    qint64 fileSize = QFileInfo(filePath).size();
+    QString sizeText = " (" + formatSize(fileSize) + ")";
+    //QFileInfo fileInfo(filePath);
+
+    //  التنسيق ٍٍٍ
+    QString itemText = QString("%1     %2      queued")
+                           .arg(fileInfo.fileName())
+                           .arg(sizeText);
+    QListWidgetItem *item = new QListWidgetItem(itemText);
+    ui->listWidgetBefore->addItem(item);
+    //
+
     // ─── 5. عرض النتائج في القائمة ───────────────────────
     ui->listWidgetBefore->clear();
-    ui->listWidgetBefore->addItem(tr("📁 %1").arg(QFileInfo(filePath).fileName()));
+    ui->listWidgetBefore->addItem(tr(" %1%2").arg(QFileInfo(filePath).fileName()).arg(sizeText));
 
     if (files.isEmpty()) {
-        ui->listWidgetBefore->addItem(tr("⚠️ لا توجد ملفات"));
+        ui->listWidgetBefore->addItem(tr(" No files found."));
     } else {
-        ui->listWidgetBefore->addItem(tr("📊 عدد الملفات: %1").arg(files.size()));
+        ui->listWidgetBefore->addItem(tr(" Number of files: %1 ").arg(files.size()));
         for (const QString &file : files) {
-            ui->listWidgetBefore->addItem(tr("📄 %1").arg(file));
+            QFileInfo fileInfo(file);
+            QString fileName = fileInfo.fileName();  //  اسم الملف فقط
+            ui->listWidgetBefore->addItem(tr(" %1").arg(fileName));
         }
     }
 
     // ─── 6. تحديث شريط الحالة ────────────────────────────
     showStatusMessage(ui->statusbar,
-                      tr("تم تحميل %1 ملف").arg(files.size()), 5000);
+                      tr("%1 file(s) loaded").arg(files.size()), 5000);
 
     debugFileList("Files in archive", files);
     debugFunctionEnd("onChooseFileClicked");
@@ -242,7 +294,7 @@ void MainWindow::onChooseDestinationClicked()
 
         // عرض المجلد في القائمة (جاهز للاستخراج)
         ui->listWidgetAfter->clear();
-        ui->listWidgetAfter->addItem(tr("📁 %1 جاهز للاستخراج").arg(folderPath));
+        ui->listWidgetAfter->addItem(tr("%1 ready for extraction").arg(folderPath));
 
         // تسجيل في الـ Debug
         debugVariable("Destination Folder", folderPath);
@@ -258,13 +310,16 @@ void MainWindow::onChooseDestinationClicked()
 
 void MainWindow::onExtractClicked()
 {
+
+
+
     debugFunctionStart("onExtractClicked");
 
     // ─── 1. قراءة مسار الملف ──────────────────────────────
     QString filePath = ui->filepathlineEdit->text();
     if (filePath.isEmpty()) {
-        debugError("لم يتم اختيار ملف");
-        QMessageBox::warning(this, tr("خطأ"), tr("الرجاء اختيار ملف مضغوط أولاً"));
+        debugError("No file selected.");
+        QMessageBox::warning(this, tr("Error"), tr("Please select a compressed file first."));
         debugFunctionEnd("onExtractClicked");
         return;
     }
@@ -318,24 +373,46 @@ void MainWindow::onExtractClicked()
                     }
 
                     showExtractEnd(ui->statusbar, files.size());
-
+                    // -----------------  عرض الملفات و المجلدات المستخرجة ----------------------
                     ui->listWidgetAfter->clear();
-                    ui->listWidgetAfter->addItem(tr("📁 %1 (تمت العملية)").arg(outputPath));
+                    ui->listWidgetAfter->addItem(tr(" %1 (Operation completed)").arg(outputPath));
 
                     if (files.isEmpty()) {
-                        ui->listWidgetAfter->addItem(tr("⚠️ لا توجد ملفات مستخرجة"));
+                        ui->listWidgetAfter->addItem(tr(" No extracted files."));
                     } else {
+                        // حساب الحجم الإجمالي للملفات المستخرجة
+                        qint64 totalExtractedSize = 0;
                         for (const QString &file : files) {
-                            ui->listWidgetAfter->addItem(tr("📄 %1 (تمت العملية)").arg(file));
+                            QFileInfo fileInfo(file);
+                            if (fileInfo.exists() && fileInfo.isFile()) {
+                                totalExtractedSize += fileInfo.size();
+                            }
+                        }
+
+                        //  عرض الحجم الإجمالي فقط
+                        if (totalExtractedSize > 0) {
+                            ui->listWidgetAfter->addItem(tr(" Total volume: %1").arg(formatSize(totalExtractedSize)));
+                        }
+
+                        // عرض الملفات المستخرجة
+                        for (const QString &file : files) {
+                            QFileInfo fileInfo(file);
+                            QString fileName = fileInfo.fileName();
+
+                            if (fileInfo.isDir()) {
+                                ui->listWidgetAfter->addItem(tr(" %1 (Operation completed)").arg(fileName));
+                            } else {
+                                ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(fileName));
+                            }
                         }
                     }
 
-                    QMessageBox::information(this, tr("تمت العملية بنجاح "),
-                                             tr("تم استخراج الملفات بنجاح إلى:\n%1").arg(outputPath));
+                    QMessageBox::information(this, tr("The operation was completed successfully."),
+                                             tr("The files were successfully extracted to:\n%1").arg(outputPath));
 
                 } else {
-                    ui->statusbar->showMessage(tr("❌ فشل الاستخراج: %1").arg(message), 5000);
-                    QMessageBox::critical(this, tr("خطأ"), message);
+                    ui->statusbar->showMessage(tr(" Extraction failed: %1").arg(message), 5000);
+                    QMessageBox::critical(this, tr("Error"), message);
                 }
 
                 // تنظيف الخيط
@@ -347,7 +424,7 @@ void MainWindow::onExtractClicked()
     connect(thread, &ExtractThread::progressUpdated, this,
             [this](int current, int total) {
                 updateProgressBar(ui->progressBar, current, total);
-                ui->statusbar->showMessage(tr("استخراج %1/%2").arg(current).arg(total), 0);
+                ui->statusbar->showMessage(tr("Extracting %1/%2").arg(current).arg(total), 0);
             });
 
     // ─── 8. تشغيل الخيط ─────────────────────────────────────
@@ -379,44 +456,7 @@ QString MainWindow::find7zExecutable()
 // تصميم الواجهة (UI Styling)
 // ============================================================
 
-void MainWindow::setupUI()
-{
-    // زر الاستخراج (أخضر)
-    ui->startextract->setStyleSheet(
-        "QPushButton {"
-        "   background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,"
-        "       stop:0 rgba(76, 175, 80, 200),"
-        "       stop:0.3 rgba(139, 195, 74, 180),"
-        "       stop:0.7 rgba(56, 142, 60, 180),"
-        "       stop:1 rgba(27, 94, 32, 160));"
-        "   color: white;"
-        "   border: 1px solid #1B5E20;"
-        "   font-weight: bold;"
-        "}"
-        "QPushButton:hover {"
-        "   background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,"
-        "       stop:0 rgba(102, 187, 106, 220),"
-        "       stop:0.3 rgba(165, 214, 167, 200),"
-        "       stop:0.7 rgba(76, 175, 80, 200),"
-        "       stop:1 rgba(46, 125, 50, 180));"
-        "}"
-        );
 
-    ui->fileselection->setStyleSheet(
-        "QPushButton { background-color: #3498db; color: white; }"
-        "QPushButton:hover { background-color: #2980b9; }"
-        );
-
-    ui->chooseadestination->setStyleSheet(
-        "QPushButton { background-color: #3498db; color: white; }"
-        "QPushButton:hover { background-color: #2980b9; }"
-        );
-
-    ui->debugconsole->setStyleSheet(
-        "QPushButton { background-color: #FF0000; color: white; padding: 6px; }"
-        "QPushButton:hover { background-color: #cc0000; }"
-        );
-}
 
 // ============================================================
 // الإعدادات (Settings)
@@ -483,14 +523,52 @@ void MainWindow::enableNightMode(bool enable)
     }
 }
 
+// ------------------- رابط الدعم حق الموقع ----------------------------
 void MainWindow::onSupportClicked()
 {
-    // ✅ رابط حسابك (غيِّر الرابط إلى رابطك)
+    // ✅ رابط حساباتي (غيِّر الرابط إلى رابطك)
     QString url = "https://ngf76.github.io/";  // أو رابط حسابك على تويتر، يوتيوب، إلخ
 
     // فتح الرابط في المتصفح الافتراضي
     if (!QDesktopServices::openUrl(QUrl(url))) {
-        QMessageBox::warning(this, "خطأ", "تعذر فتح الرابط");
+        QMessageBox::warning(this, "Error", "Unable to open the link.");
+    }
+}
+
+// ============================================================
+// دعم السحب والإفلات (Drag & Drop)
+// ============================================================
+
+//void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+//{
+    // قبول السحب فقط إذا كان يحتوي على ملفات
+    //if (event->mimeData()->hasUrls()) {
+      //  event->acceptProposedAction();
+    //}
+//}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    // الحصول على الملفات المسحوبة
+    QList<QUrl> urls = event->mimeData()->urls();
+    for (const QUrl &url : urls) {
+        QString filePath = url.toLocalFile();
+        if (!filePath.isEmpty()) {
+            // إضافة الملف إلى القائمة
+            ui->listWidgetBefore->addItem(filePath);
+            // (اختياري) معالجة الملف تلقائياً
+            // onFileSelected(filePath);
+        }
+    }
+    event->acceptProposedAction();
+}
+
+// حذف الملفات من القائمة قبل الاستخراج
+void MainWindow::onRemoveClicked()
+{
+    int row = ui->listWidgetBefore->currentRow();
+    if (row != -1) {
+        delete ui->listWidgetBefore->takeItem(row);
     }
 }
 

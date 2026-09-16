@@ -30,7 +30,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // تحديث نص الزر عند الضغط
     connect(ui->nightmode, &QPushButton::clicked, this, [this]() {
         bool checked = ui->nightmode->isChecked();
-        ui->nightmode->setText(checked ? " ☀️ Light Mode" : " 🌙 Night Mode");
+        ui->nightmode->setText(checked ? "  Light Mode" : "  Night Mode");
     });
 
     setFixedSize(500, 300);
@@ -55,7 +55,7 @@ void SettingsDialog::loadSettings()
 
     bool nightMode = settings.value("NightMode", false).toBool();
     ui->nightmode->setChecked(nightMode);
-    ui->nightmode->setText(nightMode ? "☀️ Light Mode" : "🌙 Night Mode");
+    ui->nightmode->setText(nightMode ? " Light Mode" : " Night Mode");
 
     // (تم تعطيل Debug Console مؤقتاً)
 }
@@ -72,8 +72,8 @@ void SettingsDialog::saveSettings()
 
 void SettingsDialog::onApplyClicked()
 {
-    qDebug() << "🔵 [1] onApplyClicked called!";
-    qDebug() << "🟢 NightMode checked:" << ui->nightmode->isChecked();
+    qDebug() << " [1] onApplyClicked called!";
+    qDebug() << " NightMode checked:" << ui->nightmode->isChecked();
 
     saveSettings();
     applyNightModeToMainWindow();
@@ -110,7 +110,7 @@ void SettingsDialog::toggleNightMode()
     applyNightModeToMainWindow();
 
     // تحديث نص الزر
-    ui->nightmode->setText(isNightModeEnabled ? " ☀️ Light Mode" : " 🌙 Night Mode");
+    ui->nightmode->setText(isNightModeEnabled ? "  Light Mode" : "  Night Mode");
 }
 
 // ============================================================

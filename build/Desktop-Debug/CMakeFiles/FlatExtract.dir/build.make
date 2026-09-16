@@ -78,6 +78,7 @@ FlatExtract_autogen/timestamp: CMakeFiles/FlatExtract.dir/compiler_depend.ts
 
 FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/resources.qrc
 FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: CMakeFiles/FlatExtract_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json
+FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/style.qss
 FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/settings\ (3).png
 FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/app-development.png
 FlatExtract_autogen/EWIEGA46WW/qrc_resources.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/play-button.png
@@ -279,19 +280,19 @@ CMakeFiles/FlatExtract.dir/Xtool.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FlatExtract.dir/Xtool.cpp.s"
 	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp -o CMakeFiles/FlatExtract.dir/Xtool.cpp.s
 
-CMakeFiles/FlatExtract.dir/checkfile.cpp.o: CMakeFiles/FlatExtract.dir/flags.make
-CMakeFiles/FlatExtract.dir/checkfile.cpp.o: /home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.cpp
-CMakeFiles/FlatExtract.dir/checkfile.cpp.o: CMakeFiles/FlatExtract.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/FlatExtract.dir/checkfile.cpp.o"
-	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FlatExtract.dir/checkfile.cpp.o -MF CMakeFiles/FlatExtract.dir/checkfile.cpp.o.d -o CMakeFiles/FlatExtract.dir/checkfile.cpp.o -c /home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.cpp
+CMakeFiles/FlatExtract.dir/Systemextract.cpp.o: CMakeFiles/FlatExtract.dir/flags.make
+CMakeFiles/FlatExtract.dir/Systemextract.cpp.o: /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp
+CMakeFiles/FlatExtract.dir/Systemextract.cpp.o: CMakeFiles/FlatExtract.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/FlatExtract.dir/Systemextract.cpp.o"
+	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FlatExtract.dir/Systemextract.cpp.o -MF CMakeFiles/FlatExtract.dir/Systemextract.cpp.o.d -o CMakeFiles/FlatExtract.dir/Systemextract.cpp.o -c /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp
 
-CMakeFiles/FlatExtract.dir/checkfile.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FlatExtract.dir/checkfile.cpp.i"
-	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.cpp > CMakeFiles/FlatExtract.dir/checkfile.cpp.i
+CMakeFiles/FlatExtract.dir/Systemextract.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FlatExtract.dir/Systemextract.cpp.i"
+	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp > CMakeFiles/FlatExtract.dir/Systemextract.cpp.i
 
-CMakeFiles/FlatExtract.dir/checkfile.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FlatExtract.dir/checkfile.cpp.s"
-	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ngf/Desktop/PJ-Apps/FlatExtract/checkfile.cpp -o CMakeFiles/FlatExtract.dir/checkfile.cpp.s
+CMakeFiles/FlatExtract.dir/Systemextract.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FlatExtract.dir/Systemextract.cpp.s"
+	/usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp -o CMakeFiles/FlatExtract.dir/Systemextract.cpp.s
 
 CMakeFiles/FlatExtract.dir/genrate.cpp.o: CMakeFiles/FlatExtract.dir/flags.make
 CMakeFiles/FlatExtract.dir/genrate.cpp.o: /home/ngf/Desktop/PJ-Apps/FlatExtract/genrate.cpp
@@ -374,7 +375,7 @@ FlatExtract_OBJECTS = \
 "CMakeFiles/FlatExtract.dir/progresshelper.cpp.o" \
 "CMakeFiles/FlatExtract.dir/isotool.cpp.o" \
 "CMakeFiles/FlatExtract.dir/Xtool.cpp.o" \
-"CMakeFiles/FlatExtract.dir/checkfile.cpp.o" \
+"CMakeFiles/FlatExtract.dir/Systemextract.cpp.o" \
 "CMakeFiles/FlatExtract.dir/genrate.cpp.o" \
 "CMakeFiles/FlatExtract.dir/settingsdialog.cpp.o" \
 "CMakeFiles/FlatExtract.dir/extractthread.cpp.o" \
@@ -393,7 +394,7 @@ FlatExtract: CMakeFiles/FlatExtract.dir/debughelper.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/progresshelper.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/isotool.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/Xtool.cpp.o
-FlatExtract: CMakeFiles/FlatExtract.dir/checkfile.cpp.o
+FlatExtract: CMakeFiles/FlatExtract.dir/Systemextract.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/genrate.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/settingsdialog.cpp.o
 FlatExtract: CMakeFiles/FlatExtract.dir/extractthread.cpp.o
@@ -409,6 +410,7 @@ FlatExtract: /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.15.13
 FlatExtract: CMakeFiles/FlatExtract.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking CXX executable FlatExtract"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/FlatExtract.dir/link.txt --verbose=$(VERBOSE)
+	/usr/bin/cmake -E copy_if_different /home/ngf/Desktop/PJ-Apps/FlatExtract/bin/7z /home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/7z
 
 # Rule to build all files generated by this target.
 CMakeFiles/FlatExtract.dir/build: FlatExtract

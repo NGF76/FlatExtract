@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(RESOURCES resources.qrc)
 
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(ZLIB REQUIRED)
@@ -71,19 +72,15 @@ else()
             iso_reader.h
             xex_parser.h
             stfs_reader.h
-            checkfile.cpp
-            checkfile.h
+            Systemextract.cpp
+            Systemextract.h
             genrate.cpp
             UtilityXex/genrated.h
             settingsdialog.h settingsdialog.cpp settingsdialog.ui
             extractthread.h extractthread.cpp
             threadhub.cpp
             threadhub.h
-
-
-
-
-
+            style.qss
         )
     endif()
 endif()
@@ -158,6 +155,7 @@ target_include_directories(FlatExtract PRIVATE ${CDIO_INCLUDE_DIR})
 target_link_libraries(FlatExtract PRIVATE cdio++ ${CDIO_LIBRARY})
 target_include_directories(FlatExtract PRIVATE ${ISO9660_INCLUDE_DIR})
 target_link_libraries(FlatExtract PRIVATE iso9660 ${iso9660_LIBRARY})
+target_link_libraries(FlatExtract PRIVATE Qt5::Core archive)
 
 message(STATUS "CDIO_INCLUDE_DIR: ${CDIO_INCLUDE_DIR}")
 message(STATUS "CDIO_LIBRARY: ${CDIO_LIBRARY}")
@@ -178,5 +176,41 @@ endif()
 
 ##conecnt Folder to Project
 include_directories(UtilityXex)
+
+#install .deb
+
+
+# ============================================================
+# إعدادات CPack لإنشاء حزمة DEB
+# ============================================================
+set(CPACK_PACKAGE_NAME "FlatExtract")
+set(CPACK_PACKAGE_VERSION "1.1.0") # يمكنك تغيير الإصدار
+set(CPACK_PACKAGE_DESCRIPTION "A simple tool to extract archives and ISO files.")
+set(CPACK_PACKAGE_VENDOR "NGF76")
+set(CPACK_PACKAGE_CONTACT "your.email@example.com") # ضع بريدك الإلكتروني
+
+# تحديد الملفات التي سيتم تثبيتها ووجهتها
+install(TARGETS FlatExtract DESTINATION bin)
+install(FILES bin/7z DESTINATION bin) # نسخ 7z إلى نفس مجلد التطبيق
+install(FILES "Icon App/FlatExtract-Base.png" DESTINATION share/icons/hicolor/512x512/apps RENAME flat_extract.png)
+install(FILES flat_extract.desktop DESTINATION share/applications)
+
+# إعدادات DEB
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "NGF76 <your.email@example.com>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.31), libqt5core5a (>= 5.15), libqt5widgets5 (>= 5.15), libquazip5-1 (>= 1.0), libcdio19 (>= 2.1)") # مثال: عدل التبعيات حسب نظامك
+
+include(CPack)
+
+
+
+# ✅ نسخ 7z بجانب الملف التنفيذي بعد البناء
+add_custom_command(TARGET FlatExtract POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/bin/7z"
+    "$<TARGET_FILE_DIR:FlatExtract>/7z"
+)
+
+
 
 

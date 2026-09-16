@@ -74,6 +74,8 @@
         <file>fonts/Inter/Inter-VariableFont_opsz,wght.ttf</file>
         <file>fonts/Inter/OFL.txt</file>
         <file>fonts/Inter/README.txt</file>
+        <file>style.qss</file>
     </qresource>
     <qresource prefix="/fonts"/>
+    <qresource prefix="/Style"/>
 </RCC>

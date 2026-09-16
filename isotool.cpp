@@ -20,10 +20,10 @@
 // ============================================================
 
 namespace {
-const QString ERROR_FILE_NOT_FOUND = "الملف غير موجود: ";
-const QString ERROR_OPEN_ISO = "فشل في فتح ملف ISO: ";
-const QString ERROR_READ_CONTENTS = "فشل في قراءة محتويات ISO";
-const QString ERROR_NO_FILES = "لم يتم استخراج أي ملف";
+const QString ERROR_FILE_NOT_FOUND = "File not found: ";
+const QString ERROR_OPEN_ISO = "Failed to open ISO file: ";
+const QString ERROR_READ_CONTENTS = "Failed to read ISO contents.";
+const QString ERROR_NO_FILES = "No file was extracted.";
 }
 
 // ============================================================
@@ -42,7 +42,7 @@ static bool fileExists(const QString &filePath, QString &errorMessage)
 static bool createOutputDir(const QString &outputPath, QString &errorMessage)
 {
     if (!QDir().mkpath(outputPath)) {
-        errorMessage = "فشل في إنشاء مجلد الوجهة: " + outputPath;
+        errorMessage = "Failed to create the destination folder: " + outputPath;
         return false;
     }
     return true;
@@ -124,7 +124,7 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
     }
 
     if (!match) {
-        errorMessage = "الملف غير موجود في ISO: " + fileName;
+        errorMessage = "The file is not present in the ISO: " + fileName;
         debugError(errorMessage);
         debugFunctionEnd("extractFileFromIso");
         return false;
@@ -138,7 +138,7 @@ bool extractFileFromIso(const QString &isoPath, const QString &fileName, const Q
 
     // Streaming write: bounded memory regardless of file size.
     if (!iso.ExtractBySectorToDisk(match->startSector, match->fileSize, fullOutputPath.toStdString())) {
-        errorMessage = "خطأ في قراءة/كتابة ملف ISO";
+        errorMessage = "ISO file read/write error";
         debugError(errorMessage);
         debugFunctionEnd("extractFileFromIso");
         return false;
@@ -198,7 +198,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
 
         QFileInfo fi(fullOutputPath);
         if (!QDir().mkpath(fi.absolutePath())) {
-            qDebug() << "❌ Failed to create directory for:" << relPath;
+            qDebug() << " Failed to create directory for:" << relPath;
             currentIndex++;
             if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
             continue;
@@ -206,14 +206,14 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
 
         // Streaming write directly to disk - bounded memory regardless of file size.
         if (!iso.ExtractBySectorToDisk(e.startSector, e.fileSize, fullOutputPath.toStdString())) {
-            qDebug() << "❌ Failed to extract:" << relPath;
+            qDebug() << " Failed to extract:" << relPath;
             currentIndex++;
             if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
             continue;
         }
 
         anySuccess = true;
-        qDebug() << "✅ Extracted:" << relPath << "(" << e.fileSize << "bytes)";
+        qDebug() << " Extracted Done:" << relPath << "(" << e.fileSize << "bytes)";
 
         currentIndex++;
         if (progressCallback) progressCallback(currentIndex, xdvdfsTotal, relPath);
@@ -239,7 +239,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
             continue; // not an STFS package, skip silently
         }
 
-        qDebug() << "📦 STFS package detected:" << relPath
+        qDebug() << " STFS package detected:" << relPath
                  << "-" << QString::fromStdString(stfs.GetDisplayName());
 
         QString stfsOutDir = fullOutputPath + "_extracted";
@@ -260,7 +260,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
 
             QFileInfo sfInfo(sfFullPath);
             if (!QDir().mkpath(sfInfo.absolutePath())) {
-                qDebug() << "  ❌ Failed to create directory for:" << sfRelPath;
+                qDebug() << "   Failed to create directory for:" << sfRelPath;
                 stfsIndex++;
                 if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
                 continue;
@@ -268,7 +268,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
 
             // Streaming write directly to disk - bounded memory regardless of file size.
             if (!stfs.ExtractFileToDisk(sf, sfFullPath.toStdString())) {
-                qDebug() << "  ❌ Failed to extract STFS entry:" << sfRelPath;
+                qDebug() << "   Failed to extract STFS entry:" << sfRelPath;
                 stfsIndex++;
                 if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
                 continue;
@@ -280,7 +280,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
             if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
         }
 
-        qDebug() << "  ✅ STFS extracted:" << stfsSuccessCount << "files ->" << stfsOutDir;
+        qDebug() << "   STFS extracted:" << stfsSuccessCount << "files ->" << stfsOutDir;
     }
     // ---- END STFS auto-extraction ----
 

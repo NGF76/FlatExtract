@@ -5,8 +5,10 @@
 
 #include <QFontDatabase>
 #include <QApplication>
+#include <QFile>
 #include <QIcon>
 #include <QDebug>
+#include <QLabel>
 #include "mainwindow.h"
 #include "Xtool.h"
 #include "xex_parser.h"
@@ -24,13 +26,15 @@ int main(int argc, char *argv[])
     // 1. إنشاء كائن التطبيق
     QApplication app(argc, argv);
 
+    QFile styleFile(":style.qss");
 
-    // 2. إنشاء النافذة الرئيسية عبر الدالة الثابتة
-
-    //mainWindow->show();
-
-    // تحميل الخطوط
-
+    if(styleFile.open(QFile::ReadOnly)){
+        QString style = QLatin1String(styleFile.readAll());
+        qApp->setStyleSheet(style);
+        styleFile.close();
+    }else {
+        qDebug() << "Failed to load style.qss";
+    }
 
     // 3. تشغيل حلقة الأحداث
     MainWindow w;

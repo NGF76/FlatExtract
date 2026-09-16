@@ -21,10 +21,10 @@
 // الثوابت (Constants)
 // ============================================================
 namespace {
-const QString ERROR_FILE_NOT_FOUND = "الملف غير موجود: ";
-const QString ERROR_EXTRACT_FAILED = "فشل في الاستخراج: الملف تالف أو غير مدعوم";
-const QString ERROR_LIST_FAILED = "فشل في عرض المحتويات: الملف تالف أو غير مدعوم";
-const QString ERROR_CREATE_DIR = "فشل في إنشاء مجلد الوجهة: ";
+const QString ERROR_FILE_NOT_FOUND = "File not found: ";
+const QString ERROR_EXTRACT_FAILED = "Extraction failed: The file is corrupt or unsupported.";
+const QString ERROR_LIST_FAILED = "Failed to display content: the file is corrupted or unsupported.";
+const QString ERROR_CREATE_DIR = "Failed to create the destination folder: ";
 }
 
 // ============================================================
@@ -71,7 +71,7 @@ QStringList getArchiveContents(const QString &filePath, QString &errorMessage)
     QStringList files = JlCompress::getFileList(nativePath);
 
     if (files.isEmpty()) {
-        errorMessage = "الملف فارغ أو تالف أو غير مدعوم";
+        errorMessage = "The file is empty, corrupt, or unsupported.";
         debugError(errorMessage);
         debugFunctionEnd("getArchiveContents");
         return QStringList();
@@ -135,7 +135,7 @@ bool extractArchive(const QString &filePath, const QString &outputPath, QString 
 
     QStringList allFiles = JlCompress::getFileList(nativePath);
     if (allFiles.isEmpty()) {
-        errorMessage = "الملف تالف أو غير مدعوم";
+        errorMessage = "The file is corrupt or unsupported.";
         debugError(errorMessage);
         debugFunctionEnd("extractArchive");
         return false;
@@ -155,7 +155,7 @@ bool extractArchive(const QString &filePath, const QString &outputPath, QString 
     }
 
     if (!anyFileExtracted) {
-        errorMessage = "فشل في استخراج أي ملف من الأرشيف";
+        errorMessage = "Failed to extract any file from the archive.";
         debugError(errorMessage);
         debugFunctionEnd("extractArchive");
         return false;
@@ -194,11 +194,11 @@ bool extractArchiveWithProgress(const QString &filePath, const QString &outputPa
     QString nativePath = QDir::toNativeSeparators(filePath);
     QString nativeOutput = QDir::toNativeSeparators(finalOutputPath);
 
-    // ✅ 1. تهيئة StatusBar و ProgressBar
+    //  1. تهيئة StatusBar و ProgressBar
     if (mainWindow) {
         showExtractStart(mainWindow->getStatusBar());
 
-        // ✅ احصل على عدد الملفات مسبقاً (للتقدم)
+        //  احصل على عدد الملفات مسبقاً (للتقدم)
         QStringList allFiles = JlCompress::getFileList(nativePath);
         int total = allFiles.size();
         if (total > 0) {
@@ -208,13 +208,13 @@ bool extractArchiveWithProgress(const QString &filePath, const QString &outputPa
         }
     }
 
-    // ✅ 2. استخدم extractDir (الأساسي)
+    //  2. استخدم extractDir (الأساسي)
     QStringList extractedFiles = JlCompress::extractDir(nativePath, nativeOutput);
 
     if (!extractedFiles.isEmpty()) {
-        // ✅ 3. تحديث ProgressBar إلى 100%
+        //  3. تحديث ProgressBar إلى 100%
         if (mainWindow) {
-            setProgressValue(mainWindow->getProgressBar(), 100);  // ✅ قفز إلى 100%
+            setProgressValue(mainWindow->getProgressBar(), 100);  //  قفز إلى 100%
             QApplication::processEvents();  // تحديث الواجهة
             QThread::msleep(300);  // انتظر نصف ثانية (لترى التقدم)
             showExtractEnd(mainWindow->getStatusBar(), extractedFiles.size());
@@ -225,12 +225,12 @@ bool extractArchiveWithProgress(const QString &filePath, const QString &outputPa
         return true;
     }
 
-    // ✅ 4. إذا فشل extractDir، استخدم extractFile (كحل بديل)
+    //  4. إذا فشل extractDir، استخدم extractFile (كحل بديل)
     debugError("extractDir فشل، نحاول extractFile");
 
     QStringList allFiles = JlCompress::getFileList(nativePath);
     if (allFiles.isEmpty()) {
-        errorMessage = "الملف تالف أو غير مدعوم";
+        errorMessage = "The file is corrupt or unsupported.";
         debugError(errorMessage);
         if (mainWindow) resetProgressBar(mainWindow->getProgressBar());
         debugFunctionEnd("extractArchiveWithProgress");
@@ -252,7 +252,7 @@ bool extractArchiveWithProgress(const QString &filePath, const QString &outputPa
             extractedCount++;
             if (mainWindow) {
                 int percent = (extractedCount * 100) / total;
-                QString statusMsg = QString("📦 %1 (%2%%) - %3/%4")
+                QString statusMsg = QString(" %1 (%2%%) - %3/%4")
                                         .arg(singleFile)
                                         .arg(percent)
                                         .arg(extractedCount)
@@ -271,7 +271,7 @@ bool extractArchiveWithProgress(const QString &filePath, const QString &outputPa
     }
 
     if (extractedCount == 0) {
-        errorMessage = "فشل في استخراج أي ملف";
+        errorMessage = "Failed to extract any file.";
         debugError(errorMessage);
         debugFunctionEnd("extractArchiveWithProgress");
         return false;

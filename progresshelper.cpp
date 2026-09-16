@@ -21,14 +21,14 @@ void showStatusMessage(QStatusBar *statusBar, const QString &message, int timeou
 
 void showExtractStart(QStatusBar *statusBar)
 {
-    showStatusMessage(statusBar, "⏳ جاري الاستخراج...", 0);
+    showStatusMessage(statusBar, "⏳ Extracting...", 0);
 }
 
 void showExtractEnd(QStatusBar *statusBar, int count)
 {
-    QString msg = QString("✅ تم استخراج %1 %2 بنجاح")
+    QString msg = QString(" %1 %2 successfully extracted.")
                       .arg(count)
-                      .arg(count == 1 ? "ملف" : "ملفات/مجلدات");
+                      .arg(count == 1 ? "File" : "Files/Folders");
     showStatusMessage(statusBar, msg, 7000);
 }
 
@@ -36,7 +36,7 @@ void updateExtractStatus(QStatusBar *statusBar, const QString &current, int inde
 {
     if (!statusBar) return;
 
-    QString msg = QString("📦 استخراج %1 (%2/%3)")
+    QString msg = QString(" Extraction %1 (%2/%3)")
                       .arg(current)
                       .arg(index)
                       .arg(total);

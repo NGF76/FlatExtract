@@ -8,6 +8,7 @@
 	"INCLUDE_DIR" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/include",
 	"INPUTS" : 
 	[
+		"/home/ngf/Desktop/PJ-Apps/FlatExtract/style.qss",
 		"/home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/settings (3).png",
 		"/home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/app-development.png",
 		"/home/ngf/Desktop/PJ-Apps/FlatExtract/Icons/play-button.png",

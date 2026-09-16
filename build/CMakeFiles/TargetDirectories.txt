@@ -1,0 +1,9 @@
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/FlatExtract.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/edit_cache.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/rebuild_cache.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/list_install_components.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/install.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/install/local.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/install/strip.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/FlatExtract_autogen_timestamp_deps.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/FlatExtract_autogen.dir

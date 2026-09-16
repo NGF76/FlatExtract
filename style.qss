@@ -1,0 +1,154 @@
+/* ===============================================================
+   style CSS
+================================================================= */
+
+
+QMainWindow {
+ background-color: #0e0f11;
+}
+
+QWidget {
+ background-color: #0e0f11;
+ color: #e8eaed;
+ font-family: "Instrument Sans"
+ font-size: 13px;
+}
+
+
+QPushButton {
+  background-color: #161719;
+  color: #e8eaed;
+  border: 1px solid #2a2c30;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: "Instrument Sans"
+  font-weight: 500;
+}
+
+//#addfiles
+QPushButton:hover {
+ background-color: #1e2024;
+}
+
+QPushButton:pressed {
+ background-color: #0e0f11;
+}
+
+QPushButton#startextract {
+ background-color: #3ecf8e;
+ color: #0e0f11;
+ border: none;
+ font-weight: 600;
+}
+
+QPushButton#startextract:hover {
+  background-color: #35b87a;
+}
+
+QPushButton#settingsButton {
+ background-color: #4f9cf9;
+ color: #0e0f11;
+ border: none;
+}
+
+
+QPushButton#settingsButton:hover {
+ background-color: #3a8ae0;
+}
+
+QPushButton#supportButton {
+ background-color: #f5a623;
+ color: #0e0f11;
+ border: none;
+}
+
+QPushButton#supportButton:hover {
+ background-color: #e0951a;
+}
+
+QPushButton#debugButton {
+ background-color: #f16363;
+ color: #0e0f11;
+ border: none;
+}
+
+QPushButton#debugButton:hover {
+ background-color: #d94a4a;
+}
+
+QLineEdit {
+    background-color: #161719;
+    color: #e8eaed;
+    border: 1px solid #2a2c30;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-family: "Instrument Sans";
+}
+
+QLineEdit:focus {
+    border: 1px solid #4f9cf9;
+}
+
+/* ============================================================
+   قوائم
+   ============================================================ */
+
+QListWidget {
+    background-color: #161719;
+    color: #e8eaed;
+    border: 1px solid #2a2c30;
+    border-radius: 4px;
+    font-family: "Instrument Sans";
+}
+
+QListWidget::item:selected {
+    background-color: #1e2024;
+}
+
+QListWidget::item:hover {
+    background-color: #1e2024;
+}
+
+/* ============================================================
+   شريط الحالة
+   ============================================================ */
+
+QStatusBar {
+    background-color: #161719;
+    color: #7a7f8a;
+    font-family: "Instrument Sans";
+    font-size: 12px;
+}
+
+/* ============================================================
+   تذييلات وملصقات
+   ============================================================ */
+
+QLabel {
+    color: #7a7f8a;
+    font-family: "Instrument Sans";
+}
+
+/* ============================================================
+   شريط التمرير
+   ============================================================ */
+
+QScrollBar:vertical {
+    background-color: #0e0f11;
+    width: 5px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #2a2c30;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #3a3f48;
+}
+
+
+
+
+

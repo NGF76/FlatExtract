@@ -6,21 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>1000</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/* ===============================================================
+   style CSS
+================================================================= */
+
+
+QMainWindow {
+ background-color: #0e0f11;
+}
+
+QWidget {
+ background-color: #0e0f11;
+ color: #e8eaed;
+ font-family: &quot;Instrument Sans&quot;
+ font-size: 13px;
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>40</x>
       <y>110</y>
-      <width>351</width>
-      <height>351</height>
+      <width>461</width>
+      <height>411</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -32,10 +49,10 @@
    <widget class="QWidget" name="verticalLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>520</x>
       <y>110</y>
-      <width>351</width>
-      <height>351</height>
+      <width>431</width>
+      <height>411</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -47,10 +64,10 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>520</y>
-      <width>301</width>
-      <height>21</height>
+      <x>340</x>
+      <y>580</y>
+      <width>321</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="value">
@@ -66,6 +83,18 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton#settingsButton {
+ background-color: #4f9cf9;
+ color: #0e0f11;
+ border: none;
+}
+
+
+QPushButton#settingsButton:hover {
+ background-color: #3a8ae0;
+}</string>
+    </property>
     <property name="text">
      <string>Settings</string>
     </property>
@@ -79,11 +108,31 @@
    <widget class="QPushButton" name="chooseadestination">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>70</y>
-      <width>141</width>
-      <height>31</height>
+      <x>770</x>
+      <y>60</y>
+      <width>181</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #161719;
+  color: #e8eaed;
+  border: 1px solid #2a2c30;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: &quot;Instrument Sans&quot;
+  font-weight: 500;
+}
+
+
+QPushButton:hover {
+ background-color: #1e2024;
+}
+
+QPushButton:pressed {
+ background-color: #0e0f11;
+}</string>
     </property>
     <property name="text">
      <string>Choose a Destination</string>
@@ -95,17 +144,37 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="fileselection">
+   <widget class="QPushButton" name="addfiles">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>70</y>
-      <width>101</width>
-      <height>31</height>
+      <x>40</x>
+      <y>60</y>
+      <width>121</width>
+      <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton #addfiles{
+  background-color: #161719;
+  color: #e8eaed;
+  border: 1px solid #2a2c30;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: &quot;Instrument Sans&quot;
+  font-weight: 500;
+}
+
+
+QPushButton#addfiles:hover {
+ background-color: #1e2024;
+}
+
+QPushButton#addfiles:pressed {
+ background-color: #0e0f11;
+}</string>
+    </property>
     <property name="text">
-     <string>File Selection</string>
+     <string>+ Add Files</string>
     </property>
     <property name="iconSize">
      <size>
@@ -117,31 +186,71 @@
    <widget class="QLineEdit" name="destinationLineEdit">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>470</y>
-      <width>351</width>
-      <height>31</height>
+      <x>520</x>
+      <y>530</y>
+      <width>431</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: #161719;
+    color: #e8eaed;
+    border: 1px solid #2a2c30;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-family: &quot;Instrument Sans&quot;;
+}
+
+QLineEdit:focus {
+    border: 1px solid #4f9cf9;
+}</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="filepathlineEdit">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>470</y>
-      <width>351</width>
-      <height>31</height>
+      <x>40</x>
+      <y>530</y>
+      <width>461</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: #161719;
+    color: #e8eaed;
+    border: 1px solid #2a2c30;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-family: &quot;Instrument Sans&quot;;
+}
+
+QLineEdit:focus {
+    border: 1px solid #4f9cf9;
+}</string>
     </property>
    </widget>
    <widget class="QPushButton" name="startextract">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>510</y>
-      <width>101</width>
-      <height>31</height>
+      <x>830</x>
+      <y>580</y>
+      <width>121</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton#startextract {
+ background-color: #3ecf8e;
+ color: #0e0f11;
+ border: none;
+ font-weight: 600;
+}
+
+QPushButton#startextract:hover {
+  background-color: #35b87a;
+}</string>
     </property>
     <property name="text">
      <string>Start Extract</string>
@@ -189,9 +298,9 @@
    <widget class="QPushButton" name="debugconsole">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>220</x>
       <y>10</y>
-      <width>101</width>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
@@ -204,7 +313,7 @@
      <rect>
       <x>100</x>
       <y>10</y>
-      <width>91</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -213,23 +322,17 @@
     </property>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
-     <height>20</height>
+     <width>1000</width>
+     <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDeveloped_by_NGF">
-    <property name="title">
-     <string>Developed by NGF</string>
-    </property>
-   </widget>
-   <addaction name="menuDeveloped_by_NGF"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
