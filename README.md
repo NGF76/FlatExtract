@@ -1,22 +1,21 @@
-# FlatExtract
+# FlatExtract v1.1.0
 
 FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and ISO images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
 
 ---
 
-## Features
+## What's New in This Release
 
-- Supports extraction from the following formats:
-  - ZIP archives
-  - ISO images (native support without external libraries)
-- Simple and organized graphical user interface (GUI)
-- Progress bar to show extraction status
-- Status bar to display process information
-- Built-in Debug Console to show system messages and errors
-- Night Mode for a comfortable experience in low-light conditions
-- Manual destination folder selection
-- Display file list before and after extraction
-- Multithreading to prevent interface freezing during extraction
+- Added support for extracting 7z, TAR, GZ, BZ2, XZ, and RAR archives using the bundled 7z tool.
+- Bundled the 7z executable within the application, so users no longer need to install it manually.
+- Display the original file size in the file list.
+- Display the number of files inside the archive before extraction.
+- Display the total size of extracted files after the operation.
+- Improved display of file names (without full paths) for easier reading.
+- Added a Support button that opens the GitHub page.
+- Fixed issues with archive content parsing.
+- Improved application stability during extraction.
+
 
 ---
 
@@ -35,22 +34,6 @@ Developed by NGF76, this application is completely free and open source. Check t
 2. Make it executable:
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
-
----
-
-# FlatExtract v1.0.0
-
-## What's New in This Release
-
-- Added support for extracting 7z, TAR, GZ, BZ2, XZ, and RAR archives using the bundled 7z tool.
-- Bundled the 7z executable within the application, so users no longer need to install it manually.
-- Display the original file size in the file list.
-- Display the number of files inside the archive before extraction.
-- Display the total size of extracted files after the operation.
-- Improved display of file names (without full paths) for easier reading.
-- Added a Support button that opens the GitHub page.
-- Fixed issues with archive content parsing.
-- Improved application stability during extraction.
 
 ---
 
