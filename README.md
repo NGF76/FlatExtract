@@ -35,7 +35,15 @@ Developed by NGF76, this application is completely free and open source. Check t
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
 
+### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
+
+Download the `.deb` file and install it using:
+
+```bash
+sudo dpkg -i FlatExtract-1.1.0-Linux.deb
+sudo apt install -f
 ---
+----
 
 ## Disclaimer
 
