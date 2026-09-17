@@ -25,7 +25,7 @@ Developed by NGF76, this application is completely free and open source. Check t
 
 
 ---
-## Installation and Usage
+## Installation and Usage (AppImage)
 
 ### Running the Application Directly (AppImage)
 
@@ -35,14 +35,17 @@ Developed by NGF76, this application is completely free and open source. Check t
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
 
+## Installation and Usage (.DEB) 
+
 ### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
 
-Download the `.deb` file and install it using:
+1. Download the `.deb Package` file from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
-```bash
+2. Download the .deb file and install it using:
+
 sudo dpkg -i FlatExtract-1.1.0-Linux.deb
 sudo apt install -f
----
+
 ----
 
 ## Disclaimer
