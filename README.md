@@ -34,6 +34,7 @@ Developed by NGF76, this application is completely free and open source. Check t
 2. Make it executable:
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
+     ./FlatExtract-x86_64.AppImage
 
 ## Installation and Usage (.DEB) 
 
