@@ -42,9 +42,10 @@ Developed by NGF76, this application is completely free and open source. Check t
 1. Download the `.deb Package` file from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
 2. Download the .deb file and install it using:
+    ```bash
 
-sudo dpkg -i FlatExtract-1.1.0-Linux.deb
-sudo apt install -f
+      sudo dpkg -i FlatExtract-1.1.0-Linux.deb
+      sudo apt install -f
 
 ----
 
