@@ -7,6 +7,7 @@ FlatExtract is a simple and powerful desktop application written in C++ using th
 ## What's New in This Release
 
 - Added support for extracting 7z, TAR, GZ, BZ2, XZ, and RAR archives using the bundled 7z tool.
+- Added support for extracting .xex files For Xbox 360 Games.
 - Bundled the 7z executable within the application, so users no longer need to install it manually.
 - Display the original file size in the file list.
 - Display the number of files inside the archive before extraction.
