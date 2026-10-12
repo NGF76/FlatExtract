@@ -22,7 +22,9 @@ FlatExtract is a simple and powerful desktop application written in C++ using th
 
 Developer By NGF76
 
-Developed by NGF76, this application is completely free and open source. Check the license file to learn more. 
+Developed by **NGF76**. This application is completely free and open source. See the `LICENSE` file for more details.
+
+GitHub: https://github.com/NGF76
 
 
 ---
@@ -56,6 +58,10 @@ Developed by NGF76, this application is completely free and open source. Check t
 This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
 
 In no event shall the developer be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
+
+The user is responsible for ensuring that their use of archives and files complies with all applicable local and international laws.
+
+
 
 This application uses the 7-Zip tool developed by Igor Pavlov, licensed under GNU LGPL. For more information, please visit:
 https://www.7-zip.org
