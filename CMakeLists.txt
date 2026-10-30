@@ -67,6 +67,8 @@ else()
             progresshelper.cpp
             isotool.h
             isotool.cpp
+            xboxog_iso.h
+            xboxog_iso.cpp
             Xtool.h
             Xtool.cpp
             iso_reader.h

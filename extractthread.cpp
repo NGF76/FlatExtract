@@ -6,6 +6,7 @@
 #include "extractthread.h"
 #include "tool.h"
 #include "isotool.h"
+#include "xboxog_iso.h"
 #include "Systemextract.h"
 #include "progresshelper.h"
 #include <QDebug>
@@ -54,8 +55,15 @@ void ExtractThread::run()
 
     //  اختيار الدالة المناسبة حسب نوع الملف
     if (suffix == "iso") {
-        //  استخراج ISO (مع تحديث التقدم)
-        success = extractAllFromIso(m_filePath, m_outputPath, errorMessage);
+        if (isXboxOgIso(m_filePath)) {
+            success = extractXboxOgIso(
+                m_filePath, m_outputPath, errorMessage,
+                [this](int current, int total, const QString &) {
+                    emit progressUpdated(current, total);
+                });
+        } else {
+            success = extractAllFromIso(m_filePath, m_outputPath, errorMessage);
+        }
     }
     else if (suffix == "zip") {
         //  استخراج ZIP (مع تقدم)
