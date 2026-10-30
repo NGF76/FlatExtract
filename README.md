@@ -1,21 +1,46 @@
-# FlatExtract v1.1.0
+# FlatExtract v1.2.0
 
 FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and ISO images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
 
 ---
 
-## What's New in This Release
+## What's New in v1.2.0
 
-- Added native support for extracting TAR, TGZ, TAR.GZ, TBZ, TAR.BZ, TBZ2, TAR.BZ2, and TAR.XZ archives.
-- Added support for extracting .xex files For Xbox 360 Games.
-- TAR extraction uses libarchive, so no external archive tool is required.
-- Display the original file size in the file list.
-- Display the number of files inside the archive before extraction.
-- Display the total size of extracted files after the operation.
-- Improved display of file names (without full paths) for easier reading.
-- Added a Support button that opens the GitHub page.
-- Fixed issues with archive content parsing.
-- Improved application stability during extraction.
+FlatExtract v1.2.0 adds native TAR extraction, improves Xbox ISO handling, and provides clearer extraction feedback.
+
+### Native TAR Support
+
+- Extract `.tar`, `.tgz`, `.tar.gz`, `.tbz`, `.tar.bz`, `.tbz2`, `.tar.bz2`, and `.tar.xz` archives directly with libarchive.
+- No external `7z`, `tar`, or decompression binary is required.
+- Preserve file permissions, timestamps, symlinks, and hardlinks.
+- Reject unsafe paths and symlink escapes during extraction.
+
+### Xbox and ISO Improvements
+
+- Detect and extract original Xbox (OG Xbox) ISO images, including XBE metadata.
+- Xbox 360 ISO and XEX support remains available.
+- Show per-file extraction progress for ZIP, TAR, and ISO operations.
+
+### Reliability and UI
+
+- Display archive file counts, original sizes, and total extracted size.
+- Show cleaner file names in the file list.
+- Improved status messages and extraction progress handling.
+- Refreshed application icon.
+
+### Packaging
+
+- The AppImage release bundles Qt and required runtime libraries.
+- The `.deb` package installs the application, desktop entry, and 512×512 icon.
+
+> **Compatibility note:** The bundled 7-Zip tool has been removed. 7z and RAR archives are no longer supported. Supported archive formats are ZIP and the TAR family listed above.
+
+## Supported Formats
+
+| Type | Formats |
+| --- | --- |
+| Archives | ZIP, TAR, TGZ, TAR.GZ, TBZ, TAR.BZ, TBZ2, TAR.BZ2, TAR.XZ |
+| Disc images | Xbox 360 ISO, OG Xbox ISO |
 
 
 ---
@@ -32,24 +57,27 @@ GitHub: https://github.com/NGF76
 
 ### Running the Application Directly (AppImage)
 
-1. Download the `FlatExtract-x86_64.AppImage` file from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+The AppImage is portable and includes the required Qt and runtime libraries.
 
-2. Make it executable:
+1. Download the latest `FlatExtract-x86_64.AppImage` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+
+2. Make it executable and run it:
    ```bash
    chmod +x FlatExtract-x86_64.AppImage
-     ./FlatExtract-x86_64.AppImage
+   ./FlatExtract-x86_64.AppImage
+   ```
 
-## Installation and Usage (.DEB) 
+## Installation and Usage (.DEB)
 
 ### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
 
-1. Download the `.deb Package` file from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+1. Download the latest `FlatExtract-1.2.0-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
-2. Download the .deb file and install it using:
-    ```bash
-
-      sudo dpkg -i FlatExtract-1.1.0-Linux.deb
-      sudo apt install -f
+2. Install it using:
+   ```bash
+   sudo dpkg -i FlatExtract-1.2.0-Linux.deb
+   sudo apt install -f
+   ```
 
 ----
 
