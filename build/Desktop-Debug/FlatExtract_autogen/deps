@@ -1,7 +1,5 @@
 FlatExtract_autogen/timestamp: \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/CMakeLists.txt \
-	/home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp \
-	/home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex/genrated.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.h \
@@ -11,6 +9,7 @@ FlatExtract_autogen/timestamp: \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/moc_predefs.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/extractthread.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/extractthread.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/genrate.cpp \
@@ -28,10 +27,14 @@ FlatExtract_autogen/timestamp: \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/stfs_reader.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.cpp \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.cpp \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/xboxog_iso.cpp \
+	/home/ngf/Desktop/PJ-Apps/FlatExtract/xboxog_iso.h \
 	/home/ngf/Desktop/PJ-Apps/FlatExtract/xex_parser.h \
 	/usr/include/alloca.h \
 	/usr/include/asm-generic/errno-base.h \

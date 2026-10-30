@@ -323,6 +323,7 @@ CMakeFiles/FlatExtract.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QStringList \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qstringlist.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QDialog \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h \
@@ -393,7 +394,7 @@ CMakeFiles/FlatExtract.dir/mainwindow.cpp.o: \
  /usr/include/c++/13/condition_variable \
  /usr/include/c++/13/bits/atomic_futex.h \
  /usr/include/c++/13/bits/std_thread.h \
- /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QFileDialog \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qfiledialog.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qdir.h \

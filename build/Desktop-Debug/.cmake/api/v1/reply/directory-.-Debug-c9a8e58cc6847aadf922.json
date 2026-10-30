@@ -17,31 +17,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 105,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 193,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 194,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 195,
+				"line" : 108,
 				"parent" : 0
 			},
 			{
 				"command" : 0,
 				"file" : 0,
 				"line" : 196,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 197,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 198,
 				"parent" : 0
 			}
 		]
@@ -86,16 +80,6 @@
 		{
 			"backtrace" : 3,
 			"component" : "Unspecified",
-			"destination" : "bin",
-			"paths" : 
-			[
-				"bin/7z"
-			],
-			"type" : "file"
-		},
-		{
-			"backtrace" : 4,
-			"component" : "Unspecified",
 			"destination" : "share/icons/hicolor/512x512/apps",
 			"paths" : 
 			[
@@ -107,7 +91,7 @@
 			"type" : "file"
 		},
 		{
-			"backtrace" : 5,
+			"backtrace" : 4,
 			"component" : "Unspecified",
 			"destination" : "share/applications",
 			"paths" : 

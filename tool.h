@@ -9,21 +9,7 @@
 #include <QString>
 #include <QStringList>
 
-// ============================================================
-// إعلانات مسبقة (Forward Declarations)
-// ============================================================
-
-class MainWindow;
-
-// ============================================================
-// دوال البحث عن الأمر المناسب
-// ============================================================
-
-/**
- * @brief البحث عن الأمر المناسب لفك الضغط (7z, 7za, 7zr, gunzip, tar, unzip)
- * @return مسار الأمر إذا وجد، أو نص فارغ إذا لم يوجد
- */
-QString findArchiveExecutable();
+#include "extractprogress.h"
 
 // ============================================================
 // دوال عرض المحتويات
@@ -55,9 +41,10 @@ bool extractArchive(const QString &filePath, const QString &outputPath, QString 
  * @param filePath مسار الملف المضغوط
  * @param outputPath مجلد الوجهة
  * @param errorMessage رسالة الخطأ (للتمرير)
- * @param mainWindow مؤشر إلى النافذة الرئيسية (لتحديث StatusBar و ProgressBar)
+ * @param progressCallback دالة تُستدعى بعد استخراج كل ملف
  * @return true إذا نجحت العملية، false إذا فشلت
  */
-bool extractArchiveWithProgress(const QString &filePath, const QString &outputPath, QString &errorMessage, MainWindow *mainWindow);
+bool extractArchiveWithProgress(const QString &filePath, const QString &outputPath, QString &errorMessage,
+                                ExtractProgressCallback progressCallback = nullptr);
 
 #endif // TOOL_H

@@ -273,3 +273,85 @@ events:
       
       
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:99 (CHECK_CXX_SOURCE_COMPILES)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/share/cmake-3.28/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicDependencyHelpers.cmake:33 (find_dependency)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Dependencies.cmake:24 (_qt_internal_find_third_party_dependencies)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Config.cmake:122 (include)"
+      - "CMakeLists.txt:13 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4"
+      binary: "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/lib/x86_64-linux-gnu/cmake/Qt6;/usr/lib/x86_64-linux-gnu/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/usr/lib/x86_64-linux-gnu/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_54c0f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_54c0f.dir/build.make CMakeFiles/cmTC_54c0f.dir/build
+        gmake[1]: Entering directory '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4'
+        Building CXX object CMakeFiles/cmTC_54c0f.dir/src.cxx.o
+        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++17 -o CMakeFiles/cmTC_54c0f.dir/src.cxx.o -c /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4/src.cxx
+        Linking CXX executable cmTC_54c0f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_54c0f.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_54c0f.dir/src.cxx.o -o cmTC_54c0f 
+        gmake[1]: Leaving directory '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-c6wHP4'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/FindWrapAtomic.cmake:33 (check_cxx_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicDependencyHelpers.cmake:33 (find_dependency)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreDependencies.cmake:30 (_qt_internal_find_third_party_dependencies)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreConfig.cmake:50 (include)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Config.cmake:167 (find_package)"
+      - "CMakeLists.txt:13 (find_package)"
+    checks:
+      - "Performing Test HAVE_STDATOMIC"
+    directories:
+      source: "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe"
+      binary: "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/lib/x86_64-linux-gnu/cmake/Qt6;/usr/lib/x86_64-linux-gnu/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/usr/lib/x86_64-linux-gnu/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "HAVE_STDATOMIC"
+      cached: true
+      stdout: |
+        Change Dir: '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_307ca/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_307ca.dir/build.make CMakeFiles/cmTC_307ca.dir/build
+        gmake[1]: Entering directory '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe'
+        Building CXX object CMakeFiles/cmTC_307ca.dir/src.cxx.o
+        /usr/bin/c++ -DHAVE_STDATOMIC  -std=gnu++17 -o CMakeFiles/cmTC_307ca.dir/src.cxx.o -c /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe/src.cxx
+        Linking CXX executable cmTC_307ca
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_307ca.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_307ca.dir/src.cxx.o -o cmTC_307ca 
+        gmake[1]: Leaving directory '/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/CMakeScratch/TryCompile-T7LTVe'
+        
+      exitCode: 0
+...

@@ -7,7 +7,7 @@
 #include "tool.h"
 #include "isotool.h"
 #include "xboxog_iso.h"
-#include "Systemextract.h"
+#include "tarextract.h"
 #include "progresshelper.h"
 #include <QDebug>
 #include <QThread>
@@ -46,32 +46,27 @@ void ExtractThread::run()
     QString suffix = QFileInfo(m_filePath).suffix().toLower();
     qDebug() << "🔍 Thread - File suffix:" << suffix;
 
-    //  التعامل مع الصيغ المركبة (tar.gz, tar.bz2, tar.xz)
-    if (m_filePath.endsWith(".tar.gz", Qt::CaseInsensitive) ||
-        m_filePath.endsWith(".tar.bz2", Qt::CaseInsensitive) ||
-        m_filePath.endsWith(".tar.xz", Qt::CaseInsensitive)) {
-        suffix = "tar";
-    }
+    auto progressCallback = [this](int current, int total, const QString &) {
+        emit progressUpdated(current, total);
+    };
 
     //  اختيار الدالة المناسبة حسب نوع الملف
     if (suffix == "iso") {
         if (isXboxOgIso(m_filePath)) {
-            success = extractXboxOgIso(
-                m_filePath, m_outputPath, errorMessage,
-                [this](int current, int total, const QString &) {
-                    emit progressUpdated(current, total);
-                });
+            success = extractXboxOgIso(m_filePath, m_outputPath, errorMessage, progressCallback);
         } else {
-            success = extractAllFromIso(m_filePath, m_outputPath, errorMessage);
+            success = extractAllFromIso(m_filePath, m_outputPath, errorMessage, progressCallback);
         }
     }
     else if (suffix == "zip") {
         //  استخراج ZIP (مع تقدم)
-        success = extractArchiveWithProgress(m_filePath, m_outputPath, errorMessage, nullptr);
+        success = extractArchiveWithProgress(m_filePath, m_outputPath, errorMessage, progressCallback);
+    }
+    else if (isSupportedTarArchive(m_filePath)) {
+        success = extractTarArchive(m_filePath, m_outputPath, errorMessage, progressCallback);
     }
     else {
-        //  استخراج الصيغ الأخرى باستخدام 7z: 7z, tar, gz, bz2, xz, rar
-        success = extractWithSystemTool(m_filePath, m_outputPath, errorMessage);
+        errorMessage = QStringLiteral("Unsupported archive format: ") + m_filePath;
     }
 
     //  إرسال إشارة النجاح أو الفشل

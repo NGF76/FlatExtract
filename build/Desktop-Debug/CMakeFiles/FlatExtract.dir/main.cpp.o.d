@@ -341,6 +341,7 @@ CMakeFiles/FlatExtract.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QStringList \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qstringlist.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QDialog \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h \

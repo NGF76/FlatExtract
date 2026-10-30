@@ -1,4 +1,6 @@
 /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/FlatExtract.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/package.dir
+/home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/package_source.dir
 /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/edit_cache.dir
 /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/rebuild_cache.dir
 /home/ngf/Desktop/PJ-Apps/FlatExtract/build/CMakeFiles/list_install_components.dir

@@ -6,9 +6,9 @@ FlatExtract is a simple and powerful desktop application written in C++ using th
 
 ## What's New in This Release
 
-- Added support for extracting 7z, TAR, GZ, BZ2, XZ, and RAR archives using the bundled 7z tool.
+- Added native support for extracting TAR, TGZ, TAR.GZ, TBZ, TAR.BZ, TBZ2, TAR.BZ2, and TAR.XZ archives.
 - Added support for extracting .xex files For Xbox 360 Games.
-- Bundled the 7z executable within the application, so users no longer need to install it manually.
+- TAR extraction uses libarchive, so no external archive tool is required.
 - Display the original file size in the file list.
 - Display the number of files inside the archive before extraction.
 - Display the total size of extracted files after the operation.
@@ -63,10 +63,8 @@ The user is responsible for ensuring that their use of archives and files compli
 
 
 
-This application uses the 7-Zip tool developed by Igor Pavlov, licensed under GNU LGPL. For more information, please visit:
-https://www.7-zip.org
-
 This application uses the QuaZIP library, licensed under GNU LGPL.
+This application uses the libarchive library, licensed under the BSD 2-Clause License.
 This application uses the libcdio / libiso9660 library, licensed under GNU GPL / LGPL.
 This application uses the Qt framework, licensed under GNU LGPL.
 
@@ -107,6 +105,10 @@ This product includes software developed by the following open-source projects:
 7. Radare2 (R2)
    - License: GNU Lesser General Public License (LGPL) v3
    - Source: https://www.radare.org
+
+8. libarchive
+   - License: BSD 2-Clause License
+   - Source: https://www.libarchive.org
 ---
 
 ### License Compliance

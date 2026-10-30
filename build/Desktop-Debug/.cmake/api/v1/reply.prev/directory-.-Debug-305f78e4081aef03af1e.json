@@ -17,31 +17,31 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 105,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 193,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 194,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 195,
+				"line" : 108,
 				"parent" : 0
 			},
 			{
 				"command" : 0,
 				"file" : 0,
 				"line" : 196,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 197,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 198,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 199,
 				"parent" : 0
 			}
 		]
@@ -89,7 +89,10 @@
 			"destination" : "bin",
 			"paths" : 
 			[
-				"bin/7z"
+				{
+					"from" : "bin/7z",
+					"to" : "flatextract-7z"
+				}
 			],
 			"type" : "file"
 		},

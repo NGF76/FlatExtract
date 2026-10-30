@@ -12,7 +12,7 @@
 #include "progresshelper.h"
 #include "isotool.h"
 #include "extractthread.h"
-#include "Systemextract.h"
+#include "tarextract.h"
 
 #include <QFileDialog>
 #include <QWidget>
@@ -190,8 +190,10 @@ void MainWindow::onChooseFileClicked()
         this,
         tr("Select a compressed file or an ISO file."),
         QDir::homePath(),
-        tr("All Supported (*.zip *.7z *.tar.gz *.tar.bz2 *.tar.xz *.iso);;"
-           "ZIP Files (*.zip);;ISO Files (*.iso);;All Files (*)")
+        tr("All Supported (*.zip *.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz *.iso);;"
+           "ZIP Files (*.zip);;"
+           "TAR Files (*.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz);;"
+           "ISO Files (*.iso);;All Files (*)")
         );
 
     if (filePath.isEmpty()) {
@@ -222,9 +224,12 @@ void MainWindow::onChooseFileClicked()
     } else if (suffix == "zip")
     {
         files = getArchiveContents(filePath, errorMessage);
-    }else
+    } else if (isSupportedTarArchive(filePath))
     {
-        files = getSystemArchiveContents(filePath, errorMessage);
+        files = getTarArchiveContents(filePath, errorMessage);
+    } else
+    {
+        errorMessage = tr("Unsupported archive format.");
     }
 
     if (!errorMessage.isEmpty()) {
@@ -424,32 +429,16 @@ void MainWindow::onExtractClicked()
     connect(thread, &ExtractThread::progressUpdated, this,
             [this](int current, int total) {
                 updateProgressBar(ui->progressBar, current, total);
-                ui->statusbar->showMessage(tr("Extracting %1/%2").arg(current).arg(total), 0);
+                if (total > 0) {
+                    ui->statusbar->showMessage(tr("Extracting %1/%2").arg(current).arg(total), 0);
+                } else {
+                    ui->statusbar->showMessage(tr("Extracting %1 file(s)...").arg(current), 0);
+                }
             });
 
     // ─── 8. تشغيل الخيط ─────────────────────────────────────
     thread->start();
     debugFunctionEnd("onExtractClicked");
-}
-
-// ============================================================
-// البحث عن 7z
-// ============================================================
-
-QString MainWindow::find7zExecutable()
-{
-    QStringList possibleNames = {"7z", "7za", "7zr", "gz"};
-    QStringList searchPaths = {"/usr/bin/", "/usr/local/bin/"};
-
-    for (const QString &name : possibleNames) {
-        for (const QString &path : searchPaths) {
-            QFileInfo file(path + name);
-            if (file.exists() && file.isExecutable()) {
-                return file.absoluteFilePath();
-            }
-        }
-    }
-    return "";
 }
 
 // ============================================================

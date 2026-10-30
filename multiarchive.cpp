@@ -1,15 +1,16 @@
 // ============================================================
 // multiarchive.cpp
-// إدارة الملفات المتعددة (ZIP, RAR, 7z)
+// إدارة الملفات المتعددة (ZIP و TAR)
 // ============================================================
 
 #include "multiarchive.h"
+#include "tarextract.h"
+#include "tool.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QListWidget>
 #include <QStatusBar>
-#include <QProcess>
 #include <QDebug>
 
 // ============================================================
@@ -28,7 +29,7 @@ void MultiArchive::loadMultipleFiles(QListWidget *listWidget, QStatusBar *status
         nullptr,
         "اختر ملفات متعددة",
         "",
-        "Archives (*.zip *.rar *.7z)"
+        "Archives (*.zip *.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz)"
         );
 
     // 2. إذا لم يختر المستخدم ملفات، أوقف التنفيذ
@@ -48,26 +49,24 @@ void MultiArchive::loadMultipleFiles(QListWidget *listWidget, QStatusBar *status
         listWidget->addItem("📦 " + QFileInfo(filePath).fileName());
         listWidget->addItem("━━━━━━━━━━━━━━━━━━━━");
 
-        // 4b. محاولة قراءة محتويات الملف باستخدام 7z
-        QStringList arguments;
-        arguments << "l" << filePath;
-
-        QProcess process;
-        process.start("7z", arguments);
-
-        if (process.waitForFinished(5000)) {
-            QString output = process.readAllStandardOutput();
-            QStringList lines = output.split('\n');
-
-            // 4c. عرض محتويات الملف في القائمة
-            for (const QString &line : lines) {
-                if (!line.trimmed().isEmpty()) {
-                    listWidget->addItem("  " + line);
-                }
-            }
+        // 4b. قراءة محتويات الملف حسب نوعه
+        QString errorMessage;
+        QStringList entries;
+        if (QFileInfo(filePath).suffix().compare("zip", Qt::CaseInsensitive) == 0) {
+            entries = getArchiveContents(filePath, errorMessage);
+        } else if (isSupportedTarArchive(filePath)) {
+            entries = getTarArchiveContents(filePath, errorMessage);
         } else {
-            // 4d. إذا فشلت القراءة، عرض رسالة خطأ
-            listWidget->addItem("  ⚠️ فشل في القراءة (انتهت المهلة)");
+            errorMessage = "Unsupported archive format.";
+        }
+
+        // 4c. عرض محتويات الملف في القائمة
+        if (!errorMessage.isEmpty()) {
+            listWidget->addItem("  Error: " + errorMessage);
+        } else {
+            for (const QString &entry : entries) {
+                listWidget->addItem("  " + entry);
+            }
         }
 
         // 4e. إضافة سطر فاصل بين الملفات

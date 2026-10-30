@@ -4,7 +4,7 @@
 #include <QString>
 #include <QtGlobal>
 
-#include <functional>
+#include "extractprogress.h"
 
 struct XboxOgXbeInfo
 {
@@ -19,12 +19,10 @@ struct XboxOgXbeInfo
     QString error;
 };
 
-using XboxOgProgressCallback = std::function<void(int, int, const QString &)>;
-
 bool isXboxOgIso(const QString &isoPath);
 bool readXboxOgXbeInfo(const QString &xbePath, XboxOgXbeInfo &info);
 bool extractXboxOgIso(const QString &isoPath, const QString &outputPath,
                       QString &errorMessage,
-                      XboxOgProgressCallback progressCallback = nullptr);
+                      ExtractProgressCallback progressCallback = nullptr);
 
 #endif

@@ -256,8 +256,12 @@ CMakeFiles/FlatExtract.dir/extractthread.cpp.o: \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QStringList \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qstringlist.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/isotool.h \
- /home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/xboxog_iso.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtCore/QtGlobal \
+ /usr/include/x86_64-linux-gnu/qt5/QtCore/qglobal.h \
+ /home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.h \
  /home/ngf/Desktop/PJ-Apps/FlatExtract/progresshelper.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QDebug \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qdebug.h \

@@ -188,6 +188,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
     int currentIndex = 0;
 
     bool anySuccess = false;
+    int stfsCompleted = 0;
 
     for (const auto &e : entries) {
         if (e.isDirectory) continue;
@@ -248,6 +249,8 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
         int stfsTotal = 0;
         for (const auto &sf : stfsFiles) if (!sf.isDirectory) stfsTotal++;
         int stfsIndex = 0;
+        const int stfsBase = xdvdfsTotal + stfsCompleted;
+        const int stfsOverallTotal = stfsBase + stfsTotal;
 
         int stfsSuccessCount = 0;
 
@@ -262,7 +265,7 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
             if (!QDir().mkpath(sfInfo.absolutePath())) {
                 qDebug() << "   Failed to create directory for:" << sfRelPath;
                 stfsIndex++;
-                if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
+                if (progressCallback) progressCallback(stfsBase + stfsIndex, stfsOverallTotal, sfRelPath);
                 continue;
             }
 
@@ -270,16 +273,17 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
             if (!stfs.ExtractFileToDisk(sf, sfFullPath.toStdString())) {
                 qDebug() << "   Failed to extract STFS entry:" << sfRelPath;
                 stfsIndex++;
-                if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
+                if (progressCallback) progressCallback(stfsBase + stfsIndex, stfsOverallTotal, sfRelPath);
                 continue;
             }
 
             stfsSuccessCount++;
 
             stfsIndex++;
-            if (progressCallback) progressCallback(stfsIndex, stfsTotal, sfRelPath);
+            if (progressCallback) progressCallback(stfsBase + stfsIndex, stfsOverallTotal, sfRelPath);
         }
 
+        stfsCompleted += stfsTotal;
         qDebug() << "   STFS extracted:" << stfsSuccessCount << "files ->" << stfsOutDir;
     }
     // ---- END STFS auto-extraction ----

@@ -65,6 +65,7 @@ else()
             debughelper.cpp
             progresshelper.h
             progresshelper.cpp
+            extractprogress.h
             isotool.h
             isotool.cpp
             xboxog_iso.h
@@ -74,8 +75,8 @@ else()
             iso_reader.h
             xex_parser.h
             stfs_reader.h
-            Systemextract.cpp
-            Systemextract.h
+            tarextract.cpp
+            tarextract.h
             genrate.cpp
             UtilityXex/genrated.h
             settingsdialog.h settingsdialog.cpp settingsdialog.ui
@@ -189,29 +190,20 @@ set(CPACK_PACKAGE_NAME "FlatExtract")
 set(CPACK_PACKAGE_VERSION "1.1.0") # يمكنك تغيير الإصدار
 set(CPACK_PACKAGE_DESCRIPTION "A simple tool to extract archives and ISO files.")
 set(CPACK_PACKAGE_VENDOR "NGF76")
-set(CPACK_PACKAGE_CONTACT "your.email@example.com") # ضع بريدك الإلكتروني
+set(CPACK_PACKAGE_CONTACT "bhrby36@gmail.com") # ضع بريدك الإلكتروني
 
 # تحديد الملفات التي سيتم تثبيتها ووجهتها
 install(TARGETS FlatExtract DESTINATION bin)
-install(FILES bin/7z DESTINATION bin) # نسخ 7z إلى نفس مجلد التطبيق
 install(FILES "Icon App/FlatExtract-Base.png" DESTINATION share/icons/hicolor/512x512/apps RENAME flat_extract.png)
 install(FILES flat_extract.desktop DESTINATION share/applications)
 
 # إعدادات DEB
 set(CPACK_GENERATOR "DEB")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "NGF76 <your.email@example.com>")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.31), libqt5core5a (>= 5.15), libqt5widgets5 (>= 5.15), libquazip5-1 (>= 1.0), libcdio19 (>= 2.1)") # مثال: عدل التبعيات حسب نظامك
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "NGF76 <bhrby36@gmail.com>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.31), libqt5core5a (>= 5.15), libqt5widgets5 (>= 5.15), libquazip5-1t64, libcdio19 (>= 2.1)")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
 include(CPack)
-
-
-
-# ✅ نسخ 7z بجانب الملف التنفيذي بعد البناء
-add_custom_command(TARGET FlatExtract POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_SOURCE_DIR}/bin/7z"
-    "$<TARGET_FILE_DIR:FlatExtract>/7z"
-)
 
 
 

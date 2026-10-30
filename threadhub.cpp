@@ -20,8 +20,10 @@ void ThreadHub::chooseFile()
         nullptr,
         "اختر ملف مضغوط أو ISO",
         QDir::homePath(),
-        "All Supported (*.zip *.7z *.tar.gz *.tar.bz2 *.tar.xz *.iso);;"
-        "ZIP Files (*.zip);;ISO Files (*.iso);;All Files (*)"
+        "All Supported (*.zip *.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz *.iso);;"
+        "ZIP Files (*.zip);;"
+        "TAR Files (*.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz);;"
+        "ISO Files (*.iso);;All Files (*)"
         );
 
     emit fileSelected(filePath);

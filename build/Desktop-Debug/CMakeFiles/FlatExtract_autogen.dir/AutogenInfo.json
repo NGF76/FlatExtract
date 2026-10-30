@@ -147,12 +147,6 @@
 	"HEADERS" : 
 	[
 		[
-			"/home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.h",
-			"MU",
-			"EWIEGA46WW/moc_Systemextract.cpp",
-			null
-		],
-		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/UtilityXex/genrated.h",
 			"MU",
 			"RMNMKLJO76/moc_genrated.cpp",
@@ -168,6 +162,12 @@
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.h",
 			"MU",
 			"EWIEGA46WW/moc_debughelper.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h",
+			"MU",
+			"EWIEGA46WW/moc_extractprogress.cpp",
 			null
 		],
 		[
@@ -219,6 +219,12 @@
 			null
 		],
 		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.h",
+			"MU",
+			"EWIEGA46WW/moc_tarextract.cpp",
+			null
+		],
+		[
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.h",
 			"MU",
 			"EWIEGA46WW/moc_threadhub.cpp",
@@ -228,6 +234,12 @@
 			"/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h",
 			"MU",
 			"EWIEGA46WW/moc_tool.cpp",
+			null
+		],
+		[
+			"/home/ngf/Desktop/PJ-Apps/FlatExtract/xboxog_iso.h",
+			"MU",
+			"EWIEGA46WW/moc_xboxog_iso.cpp",
 			null
 		],
 		[
@@ -292,7 +304,6 @@
 	"SETTINGS_FILE" : "/home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/CMakeFiles/FlatExtract_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/Systemextract.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/Xtool.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/debughelper.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/extractthread.cpp", "MU", null ],
@@ -311,8 +322,10 @@
 			"MU",
 			null
 		],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/tarextract.cpp", "MU", null ],
 		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/threadhub.cpp", "MU", null ],
-		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.cpp", "MU", null ]
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/tool.cpp", "MU", null ],
+		[ "/home/ngf/Desktop/PJ-Apps/FlatExtract/xboxog_iso.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

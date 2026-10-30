@@ -67,8 +67,8 @@ include CMakeFiles/FlatExtract_autogen_timestamp_deps.dir/compiler_depend.make
 include CMakeFiles/FlatExtract_autogen_timestamp_deps.dir/progress.make
 
 CMakeFiles/FlatExtract_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libz.so
-CMakeFiles/FlatExtract_autogen_timestamp_deps: /usr/lib/qt5/bin/moc
 CMakeFiles/FlatExtract_autogen_timestamp_deps: /usr/lib/qt5/bin/uic
+CMakeFiles/FlatExtract_autogen_timestamp_deps: /usr/lib/qt5/bin/moc
 
 FlatExtract_autogen_timestamp_deps: CMakeFiles/FlatExtract_autogen_timestamp_deps
 FlatExtract_autogen_timestamp_deps: CMakeFiles/FlatExtract_autogen_timestamp_deps.dir/build.make

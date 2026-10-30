@@ -79,7 +79,6 @@ private:
     void onRemoveClicked();
     void setupDebugConsole();
     void setupUI();
-    QString find7zExecutable();
     QString formatSize(qint64 size);
 
     // ─── متغيرات الحالة ───

@@ -156,7 +156,7 @@ bool readXboxOgXbeInfo(const QString &xbePath, XboxOgXbeInfo &info)
 
 bool extractXboxOgIso(const QString &isoPath, const QString &outputPath,
                       QString &errorMessage,
-                      XboxOgProgressCallback progressCallback)
+                      ExtractProgressCallback progressCallback)
 {
     errorMessage.clear();
 

@@ -1,5 +1,6 @@
 /home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/EWIEGA46WW/moc_mainwindow.cpp: /home/ngf/Desktop/PJ-Apps/FlatExtract/mainwindow.h \
   /home/ngf/Desktop/PJ-Apps/FlatExtract/build/Desktop-Debug/FlatExtract_autogen/moc_predefs.h \
+  /home/ngf/Desktop/PJ-Apps/FlatExtract/extractprogress.h \
   /home/ngf/Desktop/PJ-Apps/FlatExtract/settingsdialog.h \
   /home/ngf/Desktop/PJ-Apps/FlatExtract/tool.h \
   /usr/include/alloca.h \
