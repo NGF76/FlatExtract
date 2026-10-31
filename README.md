@@ -15,7 +15,7 @@ FlatExtract v1.2.0 adds native TAR extraction, improves Xbox ISO handling, and p
 - Preserve file permissions, timestamps, symlinks, and hardlinks.
 - Reject unsafe paths and symlink escapes during extraction.
 
-### Xbox and ISO Improvements
+### ISO Improvements
 
 - Detect and extract original Xbox (OG Xbox) ISO images, including XBE metadata.
 - Xbox 360 ISO and XEX support remains available.
