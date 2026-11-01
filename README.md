@@ -1,8 +1,22 @@
-# FlatExtract v1.3.0
+# FlatExtract v1.3.1
 
 FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and game disc images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
 
 ---
+
+## What's New in v1.3.1
+
+FlatExtract v1.3.1 is a UI fix release for the file picker.
+
+### Fixed
+
+- File and folder names are now readable in the open-file dialog when the dark theme is active.
+- File dialogs consistently follow the selected theme, including list, icon, and detail views, column headers, path and file-type combo boxes, and navigation buttons.
+- The light theme now styles file dialogs consistently as well.
+
+### Packaging
+
+- Updated AppImage and `.deb` packages to version 1.3.1.
 
 ## What's New in v1.3.0
 
@@ -84,11 +98,11 @@ The AppImage is portable and includes the required Qt and runtime libraries.
 
 ### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
 
-1. Download the latest `FlatExtract-1.3.0-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+1. Download the latest `FlatExtract-1.3.1-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
 2. Install it using:
    ```bash
-   sudo dpkg -i FlatExtract-1.3.0-Linux.deb
+   sudo dpkg -i FlatExtract-1.3.1-Linux.deb
    sudo apt install -f
    ```
 

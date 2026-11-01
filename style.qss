@@ -219,6 +219,93 @@ QListWidget::item:selected {
     border-bottom-color: transparent;
 }
 
+/* File dialogs (open file / choose folder) */
+QFileDialog {
+    background-color: #0b1120;
+}
+
+QFileDialog QListView,
+QFileDialog QTreeView,
+QFileDialog QTableView {
+    background-color: #0b1120;
+    alternate-background-color: #0f172a;
+    color: #cbd5e1;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    outline: none;
+}
+
+QFileDialog QListView::item:hover,
+QFileDialog QTreeView::item:hover,
+QFileDialog QTableView::item:hover {
+    background-color: #172033;
+}
+
+QFileDialog QListView::item:selected,
+QFileDialog QTreeView::item:selected,
+QFileDialog QTableView::item:selected {
+    background-color: #1e3a5f;
+    color: #f8fafc;
+}
+
+QFileDialog QHeaderView::section {
+    background-color: #111827;
+    color: #cbd5e1;
+    border: 1px solid #253044;
+    padding: 5px 8px;
+}
+
+QFileDialog QComboBox {
+    background-color: #0f172a;
+    color: #f1f5f9;
+    border: 1px solid #253044;
+    border-radius: 6px;
+    padding: 5px 8px;
+}
+
+QFileDialog QComboBox:hover,
+QFileDialog QComboBox:focus {
+    border-color: #38bdf8;
+}
+
+QFileDialog QComboBox::drop-down {
+    background: transparent;
+    border: none;
+    width: 22px;
+}
+
+QFileDialog QComboBox QAbstractItemView {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #253044;
+    selection-background-color: #1e3a5f;
+    selection-color: #f8fafc;
+}
+
+QFileDialog QToolButton {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+QFileDialog QToolButton:hover {
+    background-color: #273449;
+    border-color: #475569;
+}
+
+QFileDialog QToolButton:checked {
+    background-color: #1e3a5f;
+    border-color: #38bdf8;
+}
+
+QFileDialog QToolButton:disabled {
+    background-color: #172033;
+    color: #64748b;
+    border-color: #253044;
+}
+
 QProgressBar {
     background-color: #0f172a;
     border: 1px solid #253044;

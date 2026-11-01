@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(FlatExtract VERSION 1.3.0 LANGUAGES CXX)
+project(FlatExtract VERSION 1.3.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -189,7 +189,7 @@ include_directories(UtilityXex)
 # إعدادات CPack لإنشاء حزمة DEB
 # ============================================================
 set(CPACK_PACKAGE_NAME "FlatExtract")
-set(CPACK_PACKAGE_VERSION "1.3.0") # يمكنك تغيير الإصدار
+set(CPACK_PACKAGE_VERSION "1.3.1") # يمكنك تغيير الإصدار
 set(CPACK_PACKAGE_DESCRIPTION "A simple tool to extract archives and game disc images.")
 set(CPACK_PACKAGE_VENDOR "NGF76")
 set(CPACK_PACKAGE_CONTACT "bhrby36@gmail.com") # ضع بريدك الإلكتروني
