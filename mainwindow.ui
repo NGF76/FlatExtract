@@ -6,333 +6,524 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
+    <width>1120</width>
     <height>700</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
+  <property name="minimumSize">
+   <size>
+    <width>920</width>
+    <height>620</height>
+   </size>
   </property>
-  <property name="styleSheet">
-   <string notr="true">/* ===============================================================
-   style CSS
-================================================================= */
-
-
-QMainWindow {
- background-color: #0e0f11;
-}
-
-QWidget {
- background-color: #0e0f11;
- color: #e8eaed;
- font-family: &quot;Instrument Sans&quot;
- font-size: 13px;
-}</string>
+  <property name="windowTitle">
+   <string>FlatExtract</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>110</y>
-      <width>461</width>
-      <height>411</height>
-     </rect>
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>16</number>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QListWidget" name="listWidgetBefore"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_3">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>110</y>
-      <width>431</width>
-      <height>411</height>
-     </rect>
+    <property name="leftMargin">
+     <number>24</number>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QListWidget" name="listWidgetAfter"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>580</y>
-      <width>321</width>
-      <height>31</height>
-     </rect>
+    <property name="topMargin">
+     <number>20</number>
     </property>
-    <property name="value">
-     <number>0</number>
+    <property name="rightMargin">
+     <number>24</number>
     </property>
-   </widget>
-   <widget class="QPushButton" name="settings">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
+    <property name="bottomMargin">
+     <number>16</number>
     </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton#settingsButton {
- background-color: #4f9cf9;
- color: #0e0f11;
- border: none;
-}
-
-
-QPushButton#settingsButton:hover {
- background-color: #3a8ae0;
-}</string>
-    </property>
-    <property name="text">
-     <string>Settings</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>40</width>
-      <height>40</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="chooseadestination">
-    <property name="geometry">
-     <rect>
-      <x>770</x>
-      <y>60</y>
-      <width>181</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-  background-color: #161719;
-  color: #e8eaed;
-  border: 1px solid #2a2c30;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-family: &quot;Instrument Sans&quot;
-  font-weight: 500;
-}
-
-
-QPushButton:hover {
- background-color: #1e2024;
-}
-
-QPushButton:pressed {
- background-color: #0e0f11;
-}</string>
-    </property>
-    <property name="text">
-     <string>Choose a Destination</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>40</width>
-      <height>40</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="addfiles">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>60</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton #addfiles{
-  background-color: #161719;
-  color: #e8eaed;
-  border: 1px solid #2a2c30;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-family: &quot;Instrument Sans&quot;
-  font-weight: 500;
-}
-
-
-QPushButton#addfiles:hover {
- background-color: #1e2024;
-}
-
-QPushButton#addfiles:pressed {
- background-color: #0e0f11;
-}</string>
-    </property>
-    <property name="text">
-     <string>+ Add Files</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>40</width>
-      <height>40</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="destinationLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>530</y>
-      <width>431</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLineEdit {
-    background-color: #161719;
-    color: #e8eaed;
-    border: 1px solid #2a2c30;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-family: &quot;Instrument Sans&quot;;
-}
-
-QLineEdit:focus {
-    border: 1px solid #4f9cf9;
-}</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="filepathlineEdit">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>530</y>
-      <width>461</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLineEdit {
-    background-color: #161719;
-    color: #e8eaed;
-    border: 1px solid #2a2c30;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-family: &quot;Instrument Sans&quot;;
-}
-
-QLineEdit:focus {
-    border: 1px solid #4f9cf9;
-}</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="startextract">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>580</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton#startextract {
- background-color: #3ecf8e;
- color: #0e0f11;
- border: none;
- font-weight: 600;
-}
-
-QPushButton#startextract:hover {
-  background-color: #35b87a;
-}</string>
-    </property>
-    <property name="text">
-     <string>Start Extract</string>
-    </property>
-   </widget>
-   <widget class="QStackedWidget" name="stackedWidget">
-    <property name="geometry">
-     <rect>
-      <x>1170</x>
-      <y>20</y>
-      <width>621</width>
-      <height>451</height>
-     </rect>
-    </property>
-    <widget class="QWidget" name="page">
-     <widget class="QPushButton" name="back">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>51</width>
-        <height>23</height>
-       </rect>
+    <item>
+     <layout class="QHBoxLayout" name="headerLayout">
+      <property name="spacing">
+       <number>12</number>
       </property>
-      <property name="text">
-       <string>Back</string>
+      <item>
+       <widget class="QLabel" name="appIcon">
+        <property name="minimumSize">
+         <size>
+          <width>44</width>
+          <height>44</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>44</width>
+          <height>44</height>
+         </size>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="resources.qrc">:/Icon App/FlatExtract-Base.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="brandLayout">
+        <property name="spacing">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="titleLabel">
+          <property name="text">
+           <string>FlatExtract</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="subtitleLabel">
+          <property name="text">
+           <string>Fast, native archive and ISO extraction</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="headerSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="settings">
+        <property name="toolTip">
+         <string>Open application settings</string>
+        </property>
+        <property name="text">
+         <string>Settings</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/ui/icons/settings.png</normaloff>:/ui/icons/settings.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="supportButton">
+        <property name="toolTip">
+         <string>Support FlatExtract</string>
+        </property>
+        <property name="text">
+         <string>Support</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/ui/icons/support.png</normaloff>:/ui/icons/support.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="debugconsole">
+        <property name="toolTip">
+         <string>Show or hide the debug console</string>
+        </property>
+        <property name="text">
+         <string>Debug</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/ui/icons/terminal.png</normaloff>:/ui/icons/terminal.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="pathsLayout">
+      <property name="spacing">
+       <number>16</number>
       </property>
-     </widget>
-     <widget class="QPushButton" name="apply">
-      <property name="geometry">
-       <rect>
-        <x>530</x>
-        <y>420</y>
-        <width>80</width>
-        <height>23</height>
-       </rect>
+      <item>
+       <widget class="QFrame" name="sourceCard">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="sourceCardLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>14</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="sourceTitle">
+           <property name="text">
+            <string>Archive</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="sourceSubtitle">
+           <property name="text">
+            <string>Select the archive, ISO, or GameCube image you want to extract</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="sourceInputLayout">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="filepathlineEdit">
+             <property name="placeholderText">
+              <string>No archive selected</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="addfiles">
+             <property name="minimumSize">
+              <size>
+               <width>112</width>
+               <height>38</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Choose an archive or disc image to extract</string>
+             </property>
+             <property name="text">
+              <string>Add Files</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/ui/icons/plus.png</normaloff>:/ui/icons/plus.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="destinationCard">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="destinationCardLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>14</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="destinationTitle">
+           <property name="text">
+            <string>Destination</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="destinationSubtitle">
+           <property name="text">
+            <string>Choose the folder where extracted files will be saved</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="destinationInputLayout">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="destinationLineEdit">
+             <property name="placeholderText">
+              <string>Choose an output folder</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="chooseadestination">
+             <property name="minimumSize">
+              <size>
+               <width>112</width>
+               <height>38</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Choose the output folder</string>
+             </property>
+             <property name="text">
+              <string>Browse</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/ui/icons/folder.png</normaloff>:/ui/icons/folder.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="listsLayout">
+      <property name="spacing">
+       <number>16</number>
       </property>
-      <property name="text">
-       <string>Apply</string>
+      <item>
+       <widget class="QFrame" name="contentsCard">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>1</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="contentsCardLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="contentsTitle">
+           <property name="text">
+            <string>Archive Contents</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="contentsSubtitle">
+           <property name="text">
+            <string>Files detected inside the selected archive or disc image</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidgetBefore">
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="uniformItemSizes">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="outputCard">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>1</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="outputCardLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="outputTitle">
+           <property name="text">
+            <string>Extraction Output</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="outputSubtitle">
+           <property name="text">
+            <string>Extracted files and completion status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidgetAfter">
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="uniformItemSizes">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="actionLayout">
+      <property name="spacing">
+       <number>14</number>
       </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_2"/>
-   </widget>
-   <widget class="QPushButton" name="debugconsole">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>10</y>
-      <width>141</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Debug Console</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="supportButton">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>10</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Support Me</string>
-    </property>
-   </widget>
+      <item>
+       <widget class="QLabel" name="formatHint">
+        <property name="text">
+         <string>ZIP  ·  TAR  ·  TAR.GZ  ·  TAR.BZ2  ·  TAR.XZ  ·  PS2 / PS3 / XBOX / GAMECUBE ISO</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="actionSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="minimumSize">
+         <size>
+          <width>220</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>320</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="startextract">
+        <property name="minimumSize">
+         <size>
+          <width>176</width>
+          <height>42</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Extract the selected archive or disc image</string>
+        </property>
+        <property name="text">
+         <string>Start Extraction</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/ui/icons/extract.png</normaloff>:/ui/icons/extract.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>18</width>
+          <height>18</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1000</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

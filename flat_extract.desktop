@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=FlatExtract
-Comment=Extract archives and ISO files
+Comment=Extract archives and game disc images
 Exec=FlatExtract
 Icon=flat_extract
 Terminal=false

@@ -1,46 +1,59 @@
-# FlatExtract v1.2.0
+# FlatExtract v1.3.0
 
-FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and ISO images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
+FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and game disc images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
 
 ---
 
-## What's New in v1.2.0
+## What's New in v1.3.0
 
-FlatExtract v1.2.0 adds native TAR extraction, improves Xbox ISO handling, and provides clearer extraction feedback.
+FlatExtract v1.3.0 adds native extraction support for PlayStation 2, PlayStation 3, and GameCube disc images, alongside the existing ZIP, TAR, and Xbox support.
 
-### Native TAR Support
+### PlayStation 2 (ISO 9660)
 
-- Extract `.tar`, `.tgz`, `.tar.gz`, `.tbz`, `.tar.bz`, `.tbz2`, `.tar.bz2`, and `.tar.xz` archives directly with libarchive.
-- No external `7z`, `tar`, or decompression binary is required.
-- Preserve file permissions, timestamps, symlinks, and hardlinks.
-- Reject unsafe paths and symlink escapes during extraction.
+- Extract PS2 `.iso` images directly, including nested folders, empty files, and large game assets.
+- Files are streamed to disk instead of being loaded into memory all at once.
+- Unsafe paths are rejected during listing and extraction.
 
-### ISO Improvements
+### PlayStation 3 (UDF 2.50)
 
-- Detect and extract original Xbox (OG Xbox) ISO images, including XBE metadata.
-- Xbox 360 ISO and XEX support remains available.
-- Show per-file extraction progress for ZIP, TAR, and ISO operations.
+- Extract PS3 `.iso` images using the `libudfread` UDF reader.
+- Automatic fallback to ISO 9660 for hybrid UDF bridge discs when the UDF layout cannot be read.
+- Per-file progress reporting while large game files are extracted.
+
+### GameCube (ISO / GCM)
+
+- Extract GameCube `.iso` and `.gcm` images using a built-in FST reader.
+- Supports nested folders and Shift-JIS file names.
+- Validates file bounds and rejects unsafe paths.
 
 ### Reliability and UI
 
+- Refreshed interface with dark and light themes.
 - Display archive file counts, original sizes, and total extracted size.
 - Show cleaner file names in the file list.
-- Improved status messages and extraction progress handling.
-- Refreshed application icon.
+- Improved status messages and per-file extraction progress.
 
 ### Packaging
 
-- The AppImage release bundles Qt and required runtime libraries.
-- The `.deb` package installs the application, desktop entry, and 512×512 icon.
+- The AppImage bundles Qt, libarchive, and `libudfread` so PS3 images work out of the box.
+- The `.deb` package installs the application, desktop entry, and 512×512 icon, and declares `libudfread0` as a dependency.
 
-> **Compatibility note:** The bundled 7-Zip tool has been removed. 7z and RAR archives are no longer supported. Supported archive formats are ZIP and the TAR family listed above.
+### Previous release highlights (v1.2.0)
+
+- Native TAR extraction with libarchive, including permissions, timestamps, symlinks, and hardlinks.
+- Original Xbox (OG Xbox) ISO extraction with XBE metadata support.
+- Xbox 360 ISO and XEX support.
+
+> **Compatibility note:** The bundled 7-Zip tool has been removed. 7z and RAR archives are no longer supported. Supported archive formats are ZIP and the TAR family listed below.
 
 ## Supported Formats
 
 | Type | Formats |
 | --- | --- |
 | Archives | ZIP, TAR, TGZ, TAR.GZ, TBZ, TAR.BZ, TBZ2, TAR.BZ2, TAR.XZ |
-| Disc images | Xbox 360 ISO, OG Xbox ISO |
+| Disc images | PlayStation 2 ISO (ISO 9660), PlayStation 3 ISO (UDF 2.50), GameCube ISO/GCM, Xbox 360 ISO, OG Xbox ISO |
+
+> **PlayStation 3 note:** UDF extraction uses `libudfread`. The AppImage bundles it, and the `.deb` package installs `libudfread0` automatically. When building from source, install it with `sudo apt install libudfread0`.
 
 
 ---
@@ -71,11 +84,11 @@ The AppImage is portable and includes the required Qt and runtime libraries.
 
 ### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
 
-1. Download the latest `FlatExtract-1.2.0-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+1. Download the latest `FlatExtract-1.3.0-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
 2. Install it using:
    ```bash
-   sudo dpkg -i FlatExtract-1.2.0-Linux.deb
+   sudo dpkg -i FlatExtract-1.3.0-Linux.deb
    sudo apt install -f
    ```
 
@@ -137,6 +150,10 @@ This product includes software developed by the following open-source projects:
 8. libarchive
    - License: BSD 2-Clause License
    - Source: https://www.libarchive.org
+
+9. libudfread
+   - License: GNU Lesser General Public License (LGPL) v2.1+
+   - Source: https://www.videolan.org/developers/libudfread.html
 ---
 
 ### License Compliance

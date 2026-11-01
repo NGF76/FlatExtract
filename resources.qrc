@@ -75,6 +75,16 @@
         <file>fonts/Inter/OFL.txt</file>
         <file>fonts/Inter/README.txt</file>
         <file>style.qss</file>
+        <file>light.qss</file>
+    </qresource>
+    <qresource prefix="/ui/icons">
+        <file alias="plus.png">Icons/ui/plus.png</file>
+        <file alias="folder.png">Icons/ui/folder.png</file>
+        <file alias="settings.png">Icons/ui/settings.png</file>
+        <file alias="support.png">Icons/ui/support.png</file>
+        <file alias="terminal.png">Icons/ui/terminal.png</file>
+        <file alias="extract.png">Icons/ui/extract.png</file>
+        <file alias="check.png">Icons/ui/check.png</file>
     </qresource>
     <qresource prefix="/fonts"/>
     <qresource prefix="/Style"/>

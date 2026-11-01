@@ -30,7 +30,6 @@ public:
     ~SettingsDialog();
 
     // ─── دوال عامة للوصول إلى الإعدادات ───
-    bool isDebugConsole() const;
     bool isNightMode() const;
 
     // ─── تبديل الوضع الليلي (داخل النافذة) ───
@@ -40,13 +39,14 @@ signals:
     // ─── إشارة عند تطبيق الإعدادات ───
     void settingsApplied();
 
-    // ─── إشارة عند تغيير Night Mode ───
-    void nightModeToggled(bool enabled);
-
 private slots:
     // ─── فتحات الأزرار ───
     void onApplyClicked();
     void onBackClicked();
+
+protected:
+    // ─── إلغاء النافذة (زر Cancel أو Esc) ───
+    void reject() override;
 
 private:
     // ─── عناصر الواجهة ───
@@ -57,9 +57,6 @@ private:
     void saveSettings();
 
     void applyNightModeToMainWindow();
-
-    // ─── متغيرات الحالة ───
-    bool isNightModeEnabled = false;
 };
 
 #endif // SETTINGSDIALOG_H

@@ -6,6 +6,7 @@
 
 #include "isotool.h"
 #include "debughelper.h"
+#include "gameiso.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -48,6 +49,24 @@ static bool createOutputDir(const QString &outputPath, QString &errorMessage)
     return true;
 }
 
+// XDVDFS is used by both Xbox 360 and original Xbox images.
+static QStringList listXdvdfsContents(const QString &isoPath, QString &errorMessage)
+{
+    IsoReader iso;
+    if (!iso.Open(isoPath.toStdString())) {
+        errorMessage = ERROR_OPEN_ISO + isoPath;
+        return QStringList();
+    }
+
+    auto entries = iso.ListAllFiles();
+
+    QStringList files;
+    for (const auto &e : entries) {
+        files << QString::fromStdString(e.path);
+    }
+    return files;
+}
+
 // ============================================================
 // 3. عرض محتويات ISO
 // ============================================================
@@ -63,19 +82,40 @@ QStringList getIsoContents(const QString &isoPath, QString &errorMessage)
         return QStringList();
     }
 
-    IsoReader iso;
-    if (!iso.Open(isoPath.toStdString())) {
-        errorMessage = ERROR_OPEN_ISO + isoPath;
-        debugError(errorMessage);
-        debugFunctionEnd("getIsoContents");
-        return QStringList();
+    const IsoImageFormat format = detectIsoImageFormat(isoPath);
+    QStringList files;
+
+    switch (format) {
+    case IsoImageFormat::Iso9660:
+        files = listIso9660Contents(isoPath, errorMessage);
+        break;
+
+    case IsoImageFormat::Udf: {
+        files = listUdfContents(isoPath, errorMessage);
+
+        // Hybrid images may contain a usable ISO 9660 file system even when
+        // the UDF reader cannot handle their partition layout.
+        if (!errorMessage.isEmpty() && hasIso9660FileSystem(isoPath)) {
+            const QString udfError = errorMessage;
+            errorMessage.clear();
+            files = listIso9660Contents(isoPath, errorMessage);
+            if (!errorMessage.isEmpty()) {
+                errorMessage = udfError + QLatin1Char('\n') + errorMessage;
+            }
+        }
+        break;
     }
 
-    auto entries = iso.ListAllFiles();
+    case IsoImageFormat::GameCube:
+        files = listGameCubeContents(isoPath, errorMessage);
+        break;
 
-    QStringList files;
-    for (const auto &e : entries) {
-        files << QString::fromStdString(e.path);
+    case IsoImageFormat::XboxXdvdfs:
+    case IsoImageFormat::Unknown:
+        // Preserve the original XDVDFS path, including images whose volume
+        // descriptor is not at one of the standard offsets.
+        files = listXdvdfsContents(isoPath, errorMessage);
+        break;
     }
 
     debugFileList("Files in ISO", files);
@@ -173,6 +213,54 @@ bool extractAllFromIso(const QString &isoPath, const QString &outputPath,
         return false;
     }
 
+    const IsoImageFormat format = detectIsoImageFormat(isoPath);
+
+    if (format == IsoImageFormat::Iso9660) {
+        const bool ok = extractIso9660Image(isoPath, outputPath, errorMessage, progressCallback);
+        if (!ok) debugError(errorMessage);
+        debugFunctionEnd("extractAllFromIso");
+        return ok;
+    }
+
+    if (format == IsoImageFormat::GameCube) {
+        const bool ok = extractGameCubeImage(isoPath, outputPath, errorMessage, progressCallback);
+        if (!ok) debugError(errorMessage);
+        debugFunctionEnd("extractAllFromIso");
+        return ok;
+    }
+
+    if (format == IsoImageFormat::Udf) {
+        QString udfError;
+        if (extractUdfImage(isoPath, outputPath, udfError, progressCallback)) {
+            debugFunctionEnd("extractAllFromIso");
+            return true;
+        }
+
+        // UDF bridge images may still be readable through their ISO 9660
+        // file system (for example when libudfread is not installed).
+        if (hasIso9660FileSystem(isoPath)) {
+            errorMessage.clear();
+            if (extractIso9660Image(isoPath, outputPath, errorMessage, progressCallback)) {
+                debugFunctionEnd("extractAllFromIso");
+                return true;
+            }
+
+            if (!errorMessage.isEmpty()) {
+                errorMessage = udfError + QLatin1Char('\n') + errorMessage;
+            } else {
+                errorMessage = udfError;
+            }
+        } else {
+            errorMessage = udfError;
+        }
+
+        debugError(errorMessage);
+        debugFunctionEnd("extractAllFromIso");
+        return false;
+    }
+
+    // Xbox 360 XDVDFS, original Xbox images, and legacy images that are only
+    // recognized by the XDVDFS reader continue through the original path.
     IsoReader iso;
     if (!iso.Open(isoPath.toStdString())) {
         errorMessage = ERROR_OPEN_ISO + isoPath;

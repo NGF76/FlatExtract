@@ -75,3 +75,7 @@ CMakeLists.txt.user*
 # Build directories
 build/
 build-*/
+
+# Release artifacts
+release-artifacts/
+_CPack_Packages/

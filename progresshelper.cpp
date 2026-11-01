@@ -21,14 +21,14 @@ void showStatusMessage(QStatusBar *statusBar, const QString &message, int timeou
 
 void showExtractStart(QStatusBar *statusBar)
 {
-    showStatusMessage(statusBar, "⏳ Extracting...", 0);
+    showStatusMessage(statusBar, "Extracting...", 0);
 }
 
 void showExtractEnd(QStatusBar *statusBar, int count)
 {
-    QString msg = QString(" %1 %2 successfully extracted.")
+    QString msg = QString("%1 %2 extracted successfully.")
                       .arg(count)
-                      .arg(count == 1 ? "File" : "Files/Folders");
+                      .arg(count == 1 ? "file" : "files/folders");
     showStatusMessage(statusBar, msg, 7000);
 }
 

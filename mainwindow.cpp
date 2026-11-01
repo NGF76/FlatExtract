@@ -14,6 +14,8 @@
 #include "extractthread.h"
 #include "tarextract.h"
 
+#include <QApplication>
+#include <QFile>
 #include <QFileDialog>
 #include <QWidget>
 #include <QSettings>
@@ -26,7 +28,6 @@
 #include <QIcon>
 #include <QThread>
 #include <QDesktopServices>
-#include <QListWidgetItem>
 #include <QUrl>
 #include <QMimeData>
 #include <QDropEvent>
@@ -103,12 +104,27 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::appendDebugMessage);
 
     // ─── 6. الإعدادات الافتراضية للنافذة ────────────────────
-    setFixedSize(1000, 700);
+    resize(1120, 700);
     setWindowTitle("FlatExtract");
     setWindowIcon(QIcon(":/Icon App/FlatExtract-Base.png"));
+    ui->statusbar->setSizeGripEnabled(false);
+    ui->startextract->setDefault(true);
+    ui->startextract->setEnabled(false);
+    ui->progressBar->setVisible(false);
+
+    connect(ui->filepathlineEdit, &QLineEdit::textChanged, this,
+            [this](const QString &path) {
+                ui->startextract->setEnabled(!path.trimmed().isEmpty());
+            });
+
+    ui->listWidgetBefore->setTextElideMode(Qt::ElideMiddle);
+    ui->listWidgetAfter->setTextElideMode(Qt::ElideMiddle);
+    ui->listWidgetBefore->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listWidgetAfter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     //  تعيين مجلد افتراضي للوجهة (إذا لم يتم تعيينه سابقاً)
     ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/output");
+    showStatusMessage(ui->statusbar, tr("Ready"), 0);
 
     // ─── 7. تطبيق الإعدادات المحفوظة ────────────────────────
     applySettings();
@@ -138,11 +154,14 @@ void MainWindow::setupDebugConsole()
 {
     debugDock = new QDockWidget("Debug Console", this);
     debugDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+    debugDock->setFeatures(QDockWidget::DockWidgetMovable);
 
     debugOutput = new QPlainTextEdit(this);
+    debugOutput->setObjectName("debugOutput");
     debugOutput->setReadOnly(true);
+    debugOutput->setMinimumHeight(140);
     debugOutput->setFont(QFont("Monospace", 10));
-    debugOutput->setStyleSheet("background-color: #1e1e1e; color: #d4d4d4;");
+    debugOutput->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     debugDock->setWidget(debugOutput);
     addDockWidget(Qt::BottomDockWidgetArea, debugDock);
@@ -188,12 +207,12 @@ void MainWindow::onChooseFileClicked()
     // ─── 1. اختيار الملف ──────────────────────────────────
     QString filePath = QFileDialog::getOpenFileName(
         this,
-        tr("Select a compressed file or an ISO file."),
+        tr("Select a compressed file, ISO, or GameCube image."),
         QDir::homePath(),
-        tr("All Supported (*.zip *.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz *.iso);;"
+        tr("All Supported (*.zip *.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz *.iso *.gcm);;"
            "ZIP Files (*.zip);;"
            "TAR Files (*.tar *.tgz *.tar.gz *.tbz *.tar.bz *.tbz2 *.tar.bz2 *.tar.xz);;"
-           "ISO Files (*.iso);;All Files (*)")
+           "Disc Images (*.iso *.gcm);;All Files (*)")
         );
 
     if (filePath.isEmpty()) {
@@ -211,6 +230,8 @@ void MainWindow::onChooseFileClicked()
     QFileInfo fileInfo(filePath);
     QString baseName = fileInfo.baseName();
     ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/" + baseName);
+    ui->listWidgetBefore->clear();
+    ui->listWidgetAfter->clear();
 
     // ─── 4. قراءة المحتويات حسب نوع الملف ────────────────
     QString suffix = QFileInfo(filePath).suffix().toLower();
@@ -218,7 +239,7 @@ void MainWindow::onChooseFileClicked()
     QString errorMessage;
 
 
-    if (suffix == "iso")
+    if (suffix == "iso" || suffix == "gcm")
     {
         files = getIsoContents(filePath, errorMessage);
     } else if (suffix == "zip")
@@ -233,38 +254,28 @@ void MainWindow::onChooseFileClicked()
     }
 
     if (!errorMessage.isEmpty()) {
+        ui->startextract->setEnabled(false);
         QMessageBox::warning(this, tr("Error"), errorMessage);
         debugFunctionEnd("onChooseFileClicked");
         return;
     }
 
 
-    //─────────────────────── عرض الحجم في العنوان  ───────────────────────
-    // ─── حساب حجم الملف الأصلي ─────────────────────────// ADD New
+    // ─── حساب حجم الملف الأصلي ─────────────────────────────
     qint64 fileSize = QFileInfo(filePath).size();
     QString sizeText = " (" + formatSize(fileSize) + ")";
-    //QFileInfo fileInfo(filePath);
-
-    //  التنسيق ٍٍٍ
-    QString itemText = QString("%1     %2      queued")
-                           .arg(fileInfo.fileName())
-                           .arg(sizeText);
-    QListWidgetItem *item = new QListWidgetItem(itemText);
-    ui->listWidgetBefore->addItem(item);
-    //
 
     // ─── 5. عرض النتائج في القائمة ───────────────────────
-    ui->listWidgetBefore->clear();
-    ui->listWidgetBefore->addItem(tr(" %1%2").arg(QFileInfo(filePath).fileName()).arg(sizeText));
+    ui->listWidgetBefore->addItem(tr("%1%2").arg(fileInfo.fileName()).arg(sizeText));
 
     if (files.isEmpty()) {
-        ui->listWidgetBefore->addItem(tr(" No files found."));
+        ui->listWidgetBefore->addItem(tr("No files found."));
     } else {
-        ui->listWidgetBefore->addItem(tr(" Number of files: %1 ").arg(files.size()));
+        ui->listWidgetBefore->addItem(tr("Number of files: %1").arg(files.size()));
         for (const QString &file : files) {
             QFileInfo fileInfo(file);
             QString fileName = fileInfo.fileName();  //  اسم الملف فقط
-            ui->listWidgetBefore->addItem(tr(" %1").arg(fileName));
+            ui->listWidgetBefore->addItem(tr("%1").arg(fileName));
         }
     }
 
@@ -341,7 +352,11 @@ void MainWindow::onExtractClicked()
 
     // ─── 3. تعطيل الزر ومنع التكرار ─────────────────────────
     ui->startextract->setEnabled(false);
-    ui->startextract->setText(tr(" Extracting... "));
+    ui->startextract->setText(tr("Extracting..."));
+    ui->addfiles->setEnabled(false);
+    ui->chooseadestination->setEnabled(false);
+    ui->filepathlineEdit->setEnabled(false);
+    ui->destinationLineEdit->setEnabled(false);
 
     // ─── 4. تهيئة شريط التقدم ──────────────────────────────
     initProgressBar(ui->progressBar, 0);
@@ -357,8 +372,12 @@ void MainWindow::onExtractClicked()
             [this, outputPath](bool success, const QString &message) {
 
                 // إعادة تفعيل الزر
-                ui->startextract->setEnabled(true);
-                ui->startextract->setText(tr(" Start Extract "));
+                ui->addfiles->setEnabled(true);
+                ui->chooseadestination->setEnabled(true);
+                ui->filepathlineEdit->setEnabled(true);
+                ui->destinationLineEdit->setEnabled(true);
+                ui->startextract->setEnabled(!ui->filepathlineEdit->text().trimmed().isEmpty());
+                ui->startextract->setText(tr("Start Extraction"));
 
                 // إخفاء شريط التقدم
                 resetProgressBar(ui->progressBar);
@@ -380,10 +399,10 @@ void MainWindow::onExtractClicked()
                     showExtractEnd(ui->statusbar, files.size());
                     // -----------------  عرض الملفات و المجلدات المستخرجة ----------------------
                     ui->listWidgetAfter->clear();
-                    ui->listWidgetAfter->addItem(tr(" %1 (Operation completed)").arg(outputPath));
+                    ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(outputPath));
 
                     if (files.isEmpty()) {
-                        ui->listWidgetAfter->addItem(tr(" No extracted files."));
+                        ui->listWidgetAfter->addItem(tr("No extracted files."));
                     } else {
                         // حساب الحجم الإجمالي للملفات المستخرجة
                         qint64 totalExtractedSize = 0;
@@ -396,7 +415,7 @@ void MainWindow::onExtractClicked()
 
                         //  عرض الحجم الإجمالي فقط
                         if (totalExtractedSize > 0) {
-                            ui->listWidgetAfter->addItem(tr(" Total volume: %1").arg(formatSize(totalExtractedSize)));
+                            ui->listWidgetAfter->addItem(tr("Total volume: %1").arg(formatSize(totalExtractedSize)));
                         }
 
                         // عرض الملفات المستخرجة
@@ -405,7 +424,7 @@ void MainWindow::onExtractClicked()
                             QString fileName = fileInfo.fileName();
 
                             if (fileInfo.isDir()) {
-                                ui->listWidgetAfter->addItem(tr(" %1 (Operation completed)").arg(fileName));
+                                ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(fileName));
                             } else {
                                 ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(fileName));
                             }
@@ -416,7 +435,7 @@ void MainWindow::onExtractClicked()
                                              tr("The files were successfully extracted to:\n%1").arg(outputPath));
 
                 } else {
-                    ui->statusbar->showMessage(tr(" Extraction failed: %1").arg(message), 5000);
+                    ui->statusbar->showMessage(tr("Extraction failed: %1").arg(message), 5000);
                     QMessageBox::critical(this, tr("Error"), message);
                 }
 
@@ -454,9 +473,8 @@ void MainWindow::onExtractClicked()
 void MainWindow::onSettingsClicked()
 {
     SettingsDialog dialog(this);
-    dialog.resize(this->size());
+    dialog.setWindowIcon(windowIcon());
 
-    connect(&dialog, &SettingsDialog::nightModeToggled, this, &MainWindow::enableNightMode);
     connect(&dialog, &SettingsDialog::settingsApplied, this, &MainWindow::applySettings);
 
     dialog.exec();
@@ -468,11 +486,9 @@ void MainWindow::onSettingsClicked()
 
 void MainWindow::applySettings()
 {
-    qDebug() << "🔵 [3] applySettings called!";
-
     QSettings settings("NGF76", "FlatExtract");
 
-    bool nightMode = settings.value("NightMode", false).toBool();
+    bool nightMode = settings.value("NightMode", true).toBool();
     enableNightMode(nightMode);
 
     bool debugConsole = settings.value("DebugConsole", false).toBool();
@@ -493,23 +509,16 @@ void MainWindow::toggleNightMode()
 
 void MainWindow::enableNightMode(bool enable)
 {
-    qDebug() << "🔵 [2] enableNightMode called with:" << enable;
+    const QString themePath = enable ? ":/style.qss" : ":/light.qss";
+    QFile themeFile(themePath);
 
-    if (enable) {
-        this->setStyleSheet(
-            "QMainWindow { background-color: #1e1e1e; }"
-            "QWidget { background-color: #1e1e1e; color: #d4d4d4; }"
-            "QPushButton { background-color: #3c3c3c; color: #d4d4d4; border: 1px solid #555; border-radius: 5px; }"
-            "QPushButton:hover { background-color: #505050; }"
-            "QLineEdit { background-color: #2d2d2d; color: #d4d4d4; border: 1px solid #555; border-radius: 5px; padding: 5px; }"
-            "QListWidget { background-color: #2d2d2d; color: #d4d4d4; border: 1px solid #555; }"
-            "QListWidget::item:selected { background-color: #3c3c3c; }"
-            "QLabel { color: #d4d4d4; }"
-            "QStatusBar { background-color: #2d2d2d; color: #d4d4d4; }"
-            );
-    } else {
-        this->setStyleSheet("");
+    if (!themeFile.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning() << "Failed to load theme:" << themePath;
+        return;
     }
+
+    qApp->setStyleSheet(QString::fromUtf8(themeFile.readAll()));
+    isNightMode = enable;
 }
 
 // ------------------- رابط الدعم حق الموقع ----------------------------

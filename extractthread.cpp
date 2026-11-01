@@ -51,7 +51,7 @@ void ExtractThread::run()
     };
 
     //  اختيار الدالة المناسبة حسب نوع الملف
-    if (suffix == "iso") {
+    if (suffix == "iso" || suffix == "gcm") {
         if (isXboxOgIso(m_filePath)) {
             success = extractXboxOgIso(m_filePath, m_outputPath, errorMessage, progressCallback);
         } else {
