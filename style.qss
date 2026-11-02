@@ -169,6 +169,40 @@ QPushButton#back {
     border-color: #334155;
 }
 
+QPushButton#externalStorageButton {
+    padding: 5px 7px;
+}
+
+QMenu {
+    background-color: #111827;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+QMenu::item {
+    background-color: transparent;
+    padding: 7px 24px 7px 10px;
+    border-radius: 6px;
+    margin: 1px 2px;
+}
+
+QMenu::item:selected {
+    background-color: #1e3a5f;
+    color: #f8fafc;
+}
+
+QMenu::item:disabled {
+    color: #64748b;
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: #253044;
+    margin: 6px 8px;
+}
+
 QLineEdit {
     background-color: #0f172a;
     color: #f1f5f9;

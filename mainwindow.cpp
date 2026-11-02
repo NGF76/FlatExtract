@@ -13,11 +13,13 @@
 #include "isotool.h"
 #include "extractthread.h"
 #include "tarextract.h"
+#include "externalstorage.h"
 
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
 #include <QWidget>
+#include <QLineEdit>
 #include <QSettings>
 #include <QMessageBox>
 #include <QDir>
@@ -32,6 +34,9 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <QDragEnterEvent>
+#include <QAction>
+#include <QMenu>
+#include <QStyle>
 
 
 // ============================================================
@@ -75,12 +80,17 @@ MainWindow::MainWindow(QWidget *parent)
     // ─── 2. إعداد الواجهات ──────────────────────────────────
     setupDebugConsole();
     //setupUI();
+    setupExternalStorageMenu();
 
     // ─── 3. ربط الأزرار الرئيسية ────────────────────────────
     connect(ui->addfiles, &QPushButton::clicked,
             this, &MainWindow::onChooseFileClicked);
     connect(ui->chooseadestination, &QPushButton::clicked,
             this, &MainWindow::onChooseDestinationClicked);
+    connect(ui->destinationLineEdit, &QLineEdit::textEdited,
+            this, [this](const QString &) {
+                destinationUserSelected = true;
+            });
     connect(ui->startextract, &QPushButton::clicked,
             this, &MainWindow::onExtractClicked);
     connect(ui->settings, &QPushButton::clicked,
@@ -229,7 +239,8 @@ void MainWindow::onChooseFileClicked()
     // ─── 3. تحديث مجلد الوجهة الافتراضي ──────────────────
     QFileInfo fileInfo(filePath);
     QString baseName = fileInfo.baseName();
-    ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/" + baseName);
+    if (!destinationUserSelected || ui->destinationLineEdit->text().trimmed().isEmpty())
+        ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/" + baseName);
     ui->listWidgetBefore->clear();
     ui->listWidgetAfter->clear();
 
@@ -295,18 +306,36 @@ void MainWindow::onChooseDestinationClicked()
 {
     debugFunctionStart("onChooseDestinationClicked");
 
-    // 1. فتح نافذة اختيار مجلد
-    QString folderPath = QFileDialog::getExistingDirectory(
-        this,
-        tr("Choose a Destination"),      // عنوان النافذة (قابل للترجمة)
-        QDir::homePath(),                // المجلد الافتراضي (مجلد المستخدم)
-        QFileDialog::ShowDirsOnly        // عرض المجلدات فقط
-        );
+    // 1. فتح نافذة اختيار مجلد، بدءاً من الوجهة الحالية إن وُجدت
+    const QString startDirectory = nearestExistingDirectory(ui->destinationLineEdit->text());
+    QFileDialog dialog(this, tr("Choose a Destination"), startDirectory);
+    dialog.setOption(QFileDialog::ShowDirsOnly, true);
+    dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+
+    // إضافة وسائط التخزين الخارجية المثبتة إلى الشريط الجانبي
+    QList<QUrl> places = dialog.sidebarUrls();
+    const QList<ExternalStorageVolume> volumes = externalStorageVolumes();
+    for (const ExternalStorageVolume &volume : volumes) {
+        const QUrl url = QUrl::fromLocalFile(volume.rootPath);
+        if (!places.contains(url))
+            places.append(url);
+    }
+    dialog.setSidebarUrls(places);
 
     // 2. إذا اختار المستخدم مجلداً
+    QString folderPath;
+    if (dialog.exec() == QDialog::Accepted) {
+        const QStringList selected = dialog.selectedFiles();
+        if (!selected.isEmpty())
+            folderPath = selected.constFirst();
+    }
+
     if (!folderPath.isEmpty()) {
         // عرض المسار في حقل النص
-        ui->destinationLineEdit->setText(folderPath);
+        destinationUserSelected = true;
+        ui->destinationLineEdit->setText(QDir::toNativeSeparators(folderPath));
 
         // عرض المجلد في القائمة (جاهز للاستخراج)
         ui->listWidgetAfter->clear();
@@ -317,6 +346,90 @@ void MainWindow::onChooseDestinationClicked()
     }
 
     debugFunctionEnd("onChooseDestinationClicked");
+}
+
+// ============================================================
+// التخزين الخارجي (USB / SD card / أقراص خارجية)
+// ============================================================
+
+void MainWindow::setupExternalStorageMenu()
+{
+    externalStorageMenu = new QMenu(this);
+    externalStorageMenu->setToolTipsVisible(true);
+    ui->externalStorageButton->setMenu(externalStorageMenu);
+
+    QIcon driveIcon(QStringLiteral(":/ui/icons/drive.png"));
+    if (driveIcon.isNull())
+        driveIcon = style()->standardIcon(QStyle::SP_DriveHDIcon);
+    ui->externalStorageButton->setIcon(driveIcon);
+
+    connect(externalStorageMenu, &QMenu::aboutToShow,
+            this, &MainWindow::refreshExternalStorageMenu);
+}
+
+void MainWindow::refreshExternalStorageMenu()
+{
+    externalStorageMenu->clear();
+
+    QAction *headingAction = externalStorageMenu->addAction(tr("External storage"));
+    headingAction->setEnabled(false);
+    headingAction->setStatusTip(tr("Mounted USB drives, SD cards, and external disks"));
+
+    const QList<ExternalStorageVolume> volumes = externalStorageVolumes();
+    if (volumes.isEmpty()) {
+        QAction *emptyAction = externalStorageMenu->addAction(tr("No external storage detected"));
+        emptyAction->setEnabled(false);
+    } else {
+        for (const ExternalStorageVolume &volume : volumes) {
+            QString detail;
+            if (volume.readOnly) {
+                detail = volume.bytesTotal > 0
+                        ? tr("read-only · %1").arg(formatSize(volume.bytesTotal))
+                        : tr("read-only");
+            } else if (volume.bytesAvailable >= 0) {
+                detail = tr("%1 free of %2")
+                        .arg(formatSize(volume.bytesAvailable), formatSize(volume.bytesTotal));
+            } else {
+                detail = tr("mounted");
+            }
+
+            QAction *action = externalStorageMenu->addAction(
+                QIcon(QStringLiteral(":/ui/icons/drive.png")),
+                tr("%1 — %2").arg(volume.displayName, detail));
+            action->setToolTip(tr("Mount point: %1\nDevice: %2\nFile system: %3")
+                               .arg(volume.rootPath, volume.device, volume.fileSystem));
+            action->setStatusTip(volume.rootPath);
+
+            if (volume.readOnly) {
+                action->setEnabled(false);
+            } else {
+                connect(action, &QAction::triggered, this, [this, path = volume.rootPath]() {
+                    applyExternalStorageDestination(path);
+                });
+            }
+        }
+    }
+
+    externalStorageMenu->addSeparator();
+    QAction *browseAction = externalStorageMenu->addAction(tr("Browse for a folder…"));
+    connect(browseAction, &QAction::triggered,
+            this, &MainWindow::onChooseDestinationClicked);
+}
+
+void MainWindow::applyExternalStorageDestination(const QString &path)
+{
+    if (path.isEmpty())
+        return;
+
+    const QString nativePath = QDir::toNativeSeparators(path);
+    destinationUserSelected = true;
+    ui->destinationLineEdit->setText(nativePath);
+
+    ui->listWidgetAfter->clear();
+    ui->listWidgetAfter->addItem(tr("%1 ready for extraction").arg(nativePath));
+
+    showStatusMessage(ui->statusbar, tr("Destination set to %1").arg(nativePath), 5000);
+    debugVariable("Destination Folder", nativePath);
 }
 
 
@@ -355,6 +468,7 @@ void MainWindow::onExtractClicked()
     ui->startextract->setText(tr("Extracting..."));
     ui->addfiles->setEnabled(false);
     ui->chooseadestination->setEnabled(false);
+    ui->externalStorageButton->setEnabled(false);
     ui->filepathlineEdit->setEnabled(false);
     ui->destinationLineEdit->setEnabled(false);
 
@@ -374,6 +488,7 @@ void MainWindow::onExtractClicked()
                 // إعادة تفعيل الزر
                 ui->addfiles->setEnabled(true);
                 ui->chooseadestination->setEnabled(true);
+                ui->externalStorageButton->setEnabled(true);
                 ui->filepathlineEdit->setEnabled(true);
                 ui->destinationLineEdit->setEnabled(true);
                 ui->startextract->setEnabled(!ui->filepathlineEdit->text().trimmed().isEmpty());

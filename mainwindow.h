@@ -15,6 +15,8 @@
 #include <QDockWidget>
 #include <QPlainTextEdit>
 
+class QMenu;
+
 // ============================================================
 // 2. Includes (مكتبات المشروع)
 // ============================================================
@@ -81,7 +83,14 @@ private:
     void setupUI();
     QString formatSize(qint64 size);
 
+    // ─── التخزين الخارجي ───
+    void setupExternalStorageMenu();
+    void refreshExternalStorageMenu();
+    void applyExternalStorageDestination(const QString &path);
+
     // ─── متغيرات الحالة ───
+    QMenu *externalStorageMenu = nullptr;
+    bool destinationUserSelected = false;
     bool isNightMode = false;
 };
 

@@ -299,6 +299,37 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="externalStorageButton">
+             <property name="minimumSize">
+              <size>
+               <width>46</width>
+               <height>38</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>46</width>
+               <height>38</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Use external storage (USB drive, SD card, ...)</string>
+             </property>
+             <property name="accessibleName">
+              <string>External storage</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="chooseadestination">
              <property name="minimumSize">
               <size>

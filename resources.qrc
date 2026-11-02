@@ -80,6 +80,7 @@
     <qresource prefix="/ui/icons">
         <file alias="plus.png">Icons/ui/plus.png</file>
         <file alias="folder.png">Icons/ui/folder.png</file>
+        <file alias="drive.png">Icons/ui/drive.png</file>
         <file alias="settings.png">Icons/ui/settings.png</file>
         <file alias="support.png">Icons/ui/support.png</file>
         <file alias="terminal.png">Icons/ui/terminal.png</file>

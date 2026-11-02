@@ -1,8 +1,20 @@
-# FlatExtract v1.3.1
+# FlatExtract v1.4.0
 
 FlatExtract is a simple and powerful desktop application written in C++ using the Qt framework. It is designed to easily and quickly extract files from compressed archives and game disc images. The application is aimed at Linux users who are looking for a lightweight and user-friendly graphical tool for managing compressed files.
 
 ---
+
+## What's New in v1.4.0
+
+FlatExtract v1.4.0 makes it easy to extract directly to a USB drive, SD card, or other external storage device.
+
+### External storage destinations
+
+- A new drive button next to **Browse** lists mounted USB drives, SD cards, and external disks, including their free space.
+- Selecting a volume sets it as the extraction destination.
+- Mounted external volumes are also available in the sidebar of the **Choose a Destination** dialog.
+- The destination dialog starts in the current destination folder.
+- A destination chosen manually is preserved when another archive is selected.
 
 ## What's New in v1.3.1
 
@@ -69,6 +81,13 @@ FlatExtract v1.3.0 adds native extraction support for PlayStation 2, PlayStation
 
 > **PlayStation 3 note:** UDF extraction uses `libudfread`. The AppImage bundles it, and the `.deb` package installs `libudfread0` automatically. When building from source, install it with `sudo apt install libudfread0`.
 
+## Destination and External Storage
+
+- Choose any writable folder as the extraction destination, or type a path directly.
+- Use the drive button next to **Browse** to select a mounted USB drive, SD card, or external disk. The menu shows each volume's free space and sets the destination to its mount point.
+- Mounted external volumes also appear in the sidebar of the **Choose a Destination** dialog.
+- The destination field can be edited after choosing a volume, so you can extract into a subfolder such as `USB STICK/Games`.
+
 
 ---
 
@@ -98,11 +117,11 @@ The AppImage is portable and includes the required Qt and runtime libraries.
 
 ### Or: DEB Package (Recommended for Debian/Ubuntu/Linux Mint)
 
-1. Download the latest `FlatExtract-1.3.1-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
+1. Download the latest `FlatExtract-1.4.0-Linux.deb` from the [Releases page](https://github.com/NGF76/FlatExtract/releases).
 
 2. Install it using:
    ```bash
-   sudo dpkg -i FlatExtract-1.3.1-Linux.deb
+   sudo dpkg -i FlatExtract-1.4.0-Linux.deb
    sudo apt install -f
    ```
 
