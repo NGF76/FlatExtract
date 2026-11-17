@@ -14,6 +14,7 @@
 #include "extractthread.h"
 #include "tarextract.h"
 #include "externalstorage.h"
+#include "chdtool.h"
 
 #include <QApplication>
 #include <QFile>
@@ -37,6 +38,13 @@
 #include <QAction>
 #include <QMenu>
 #include <QStyle>
+#include <QFileSystemModel>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QHeaderView>
+#include <QFileIconProvider>
+#include <QMimeDatabase>
+#include <QHash>
 
 
 // ============================================================
@@ -79,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ─── 2. إعداد الواجهات ──────────────────────────────────
     setupDebugConsole();
+    setupTreeViews();
     //setupUI();
     setupExternalStorageMenu();
 
@@ -105,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
         debugDock->setVisible(!debugDock->isVisible());
     });
     // ---------------- السحب و الافلات ------------------
-    ui->listWidgetBefore->setAcceptDrops(true);
+    ui->treeViewBefore->setAcceptDrops(true);
     setAcceptDrops(true);  // للنافذة الرئيسية
 
 
@@ -120,20 +129,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->setSizeGripEnabled(false);
     ui->startextract->setDefault(true);
     ui->startextract->setEnabled(false);
-    ui->progressBar->setVisible(false);
+    ui->progressBar->setRange(0, 100);
+    ui->progressBar->setValue(0);
+    ui->progressBar->setFormat(QStringLiteral("%p%"));
+    ui->progressBar->setVisible(true);
 
     connect(ui->filepathlineEdit, &QLineEdit::textChanged, this,
             [this](const QString &path) {
                 ui->startextract->setEnabled(!path.trimmed().isEmpty());
             });
 
-    ui->listWidgetBefore->setTextElideMode(Qt::ElideMiddle);
-    ui->listWidgetAfter->setTextElideMode(Qt::ElideMiddle);
-    ui->listWidgetBefore->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->listWidgetAfter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
     //  تعيين مجلد افتراضي للوجهة (إذا لم يتم تعيينه سابقاً)
-    ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/output");
+    QSettings startupSettings("NGF76", "FlatExtract");
+    const bool rememberDestination =
+            startupSettings.value("RememberDestination", true).toBool();
+    QString initialDestination =
+            rememberDestination ? startupSettings.value("LastDestination").toString()
+                                : QString();
+    if (initialDestination.trimmed().isEmpty())
+        initialDestination = QDir::homePath() + "/Desktop/output";
+
+    ui->destinationLineEdit->setText(initialDestination);
+    updateOutputExplorer(initialDestination);
     showStatusMessage(ui->statusbar, tr("Ready"), 0);
 
     // ─── 7. تطبيق الإعدادات المحفوظة ────────────────────────
@@ -183,6 +200,129 @@ void MainWindow::setupDebugConsole()
 void MainWindow::appendDebugMessage(const QString &msg)
 {
     if (debugOutput) debugOutput->appendPlainText(msg);
+}
+
+// ============================================================
+// إعداد عارضات الشجرة (QTreeView) بأسلوب مستكشف الملفات
+// ============================================================
+
+void MainWindow::setupTreeViews()
+{
+    archiveContentsModel = new QStandardItemModel(this);
+    archiveContentsModel->setHorizontalHeaderLabels({tr("Name"), tr("Size"), tr("Type")});
+
+    ui->treeViewBefore->setModel(archiveContentsModel);
+    ui->treeViewBefore->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->treeViewBefore->setRootIsDecorated(true);
+    ui->treeViewBefore->setAllColumnsShowFocus(true);
+    ui->treeViewBefore->setIndentation(18);
+    ui->treeViewBefore->header()->setStretchLastSection(false);
+    ui->treeViewBefore->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->treeViewBefore->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->treeViewBefore->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+
+    outputFileSystemModel = new QFileSystemModel(this);
+    outputFileSystemModel->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+
+    ui->treeViewAfter->setModel(outputFileSystemModel);
+    ui->treeViewAfter->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->treeViewAfter->setRootIsDecorated(true);
+    ui->treeViewAfter->setAllColumnsShowFocus(true);
+    ui->treeViewAfter->setIndentation(18);
+    ui->treeViewAfter->hideColumn(3); // Hide Date Modified; keep Name, Size, Type
+    ui->treeViewAfter->header()->setStretchLastSection(false);
+    ui->treeViewAfter->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->treeViewAfter->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->treeViewAfter->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+}
+
+void MainWindow::populateArchiveTree(const QString &archivePath, const QStringList &entries)
+{
+    archiveContentsModel->removeRows(0, archiveContentsModel->rowCount());
+
+    QFileIconProvider iconProvider;
+    QMimeDatabase mimeDb;
+    const QIcon folderIcon = iconProvider.icon(QFileIconProvider::Folder);
+    const QIcon fileIcon = iconProvider.icon(QFileIconProvider::File);
+
+    QFileInfo archiveInfo(archivePath);
+    QStandardItem *rootNameItem = new QStandardItem(fileIcon, archiveInfo.fileName());
+    QStandardItem *rootSizeItem = new QStandardItem(formatSize(archiveInfo.size()));
+    QStandardItem *rootTypeItem = new QStandardItem(tr("Archive (%1 items)").arg(entries.size()));
+    rootSizeItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    archiveContentsModel->appendRow({rootNameItem, rootSizeItem, rootTypeItem});
+
+    if (entries.isEmpty()) {
+        QStandardItem *emptyItem = new QStandardItem(tr("No files found."));
+        rootNameItem->appendRow({emptyItem, new QStandardItem(QStringLiteral("—")), new QStandardItem(tr("Info"))});
+        ui->treeViewBefore->expand(rootNameItem->index());
+        return;
+    }
+
+    QHash<QString, QStandardItem *> folderNodes;
+
+    for (const QString &rawEntry : entries) {
+        QString cleaned = QDir::fromNativeSeparators(rawEntry).trimmed();
+        while (cleaned.startsWith('/'))
+            cleaned.remove(0, 1);
+        if (cleaned.isEmpty())
+            continue;
+
+        const bool isExplicitDir = cleaned.endsWith('/');
+        if (isExplicitDir)
+            cleaned.chop(1);
+        if (cleaned.isEmpty())
+            continue;
+
+        const QStringList parts = cleaned.split('/', Qt::SkipEmptyParts);
+        QStandardItem *parentNode = rootNameItem;
+        QString runningPath;
+
+        for (int i = 0; i < parts.size(); ++i) {
+            const QString &part = parts.at(i);
+            runningPath = runningPath.isEmpty() ? part : (runningPath + '/' + part);
+            const bool isDir = (i < parts.size() - 1) || isExplicitDir;
+
+            if (isDir) {
+                if (!folderNodes.contains(runningPath)) {
+                    QStandardItem *dirName = new QStandardItem(folderIcon, part);
+                    QStandardItem *dirSize = new QStandardItem(QStringLiteral("—"));
+                    QStandardItem *dirType = new QStandardItem(tr("Folder"));
+                    dirSize->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                    parentNode->appendRow({dirName, dirSize, dirType});
+                    folderNodes.insert(runningPath, dirName);
+                }
+                parentNode = folderNodes.value(runningPath);
+            } else {
+                const QMimeType mime = mimeDb.mimeTypeForFile(part, QMimeDatabase::MatchExtension);
+                QString typeDesc = mime.isValid() && !mime.comment().isEmpty()
+                        ? mime.comment()
+                        : tr("File");
+
+                QStandardItem *fileName = new QStandardItem(fileIcon, part);
+                QStandardItem *fileSize = new QStandardItem(QStringLiteral("—"));
+                QStandardItem *fileType = new QStandardItem(typeDesc);
+                fileSize->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                parentNode->appendRow({fileName, fileSize, fileType});
+            }
+        }
+    }
+
+    ui->treeViewBefore->expand(rootNameItem->index());
+}
+
+void MainWindow::updateOutputExplorer(const QString &outputPath)
+{
+    if (!outputFileSystemModel || outputPath.trimmed().isEmpty())
+        return;
+
+    QDir dir(outputPath);
+    if (dir.exists()) {
+        const QModelIndex rootIdx = outputFileSystemModel->setRootPath(dir.absolutePath());
+        ui->treeViewAfter->setRootIndex(rootIdx);
+    } else {
+        ui->treeViewAfter->setRootIndex(QModelIndex());
+    }
 }
 
 
@@ -241,8 +381,8 @@ void MainWindow::onChooseFileClicked()
     QString baseName = fileInfo.baseName();
     if (!destinationUserSelected || ui->destinationLineEdit->text().trimmed().isEmpty())
         ui->destinationLineEdit->setText(QDir::homePath() + "/Desktop/" + baseName);
-    ui->listWidgetBefore->clear();
-    ui->listWidgetAfter->clear();
+    archiveContentsModel->removeRows(0, archiveContentsModel->rowCount());
+    updateOutputExplorer(ui->destinationLineEdit->text());
 
     // ─── 4. قراءة المحتويات حسب نوع الملف ────────────────
     QString suffix = QFileInfo(filePath).suffix().toLower();
@@ -272,23 +412,8 @@ void MainWindow::onChooseFileClicked()
     }
 
 
-    // ─── حساب حجم الملف الأصلي ─────────────────────────────
-    qint64 fileSize = QFileInfo(filePath).size();
-    QString sizeText = " (" + formatSize(fileSize) + ")";
-
-    // ─── 5. عرض النتائج في القائمة ───────────────────────
-    ui->listWidgetBefore->addItem(tr("%1%2").arg(fileInfo.fileName()).arg(sizeText));
-
-    if (files.isEmpty()) {
-        ui->listWidgetBefore->addItem(tr("No files found."));
-    } else {
-        ui->listWidgetBefore->addItem(tr("Number of files: %1").arg(files.size()));
-        for (const QString &file : files) {
-            QFileInfo fileInfo(file);
-            QString fileName = fileInfo.fileName();  //  اسم الملف فقط
-            ui->listWidgetBefore->addItem(tr("%1").arg(fileName));
-        }
-    }
+    // ─── 5. عرض النتائج في شجرة الملفات ─────────────────
+    populateArchiveTree(filePath, files);
 
     // ─── 6. تحديث شريط الحالة ────────────────────────────
     showStatusMessage(ui->statusbar,
@@ -337,9 +462,8 @@ void MainWindow::onChooseDestinationClicked()
         destinationUserSelected = true;
         ui->destinationLineEdit->setText(QDir::toNativeSeparators(folderPath));
 
-        // عرض المجلد في القائمة (جاهز للاستخراج)
-        ui->listWidgetAfter->clear();
-        ui->listWidgetAfter->addItem(tr("%1 ready for extraction").arg(folderPath));
+        // عرض المجلد في مستكشف المخرجات
+        updateOutputExplorer(folderPath);
 
         // تسجيل في الـ Debug
         debugVariable("Destination Folder", folderPath);
@@ -425,8 +549,7 @@ void MainWindow::applyExternalStorageDestination(const QString &path)
     destinationUserSelected = true;
     ui->destinationLineEdit->setText(nativePath);
 
-    ui->listWidgetAfter->clear();
-    ui->listWidgetAfter->addItem(tr("%1 ready for extraction").arg(nativePath));
+    updateOutputExplorer(nativePath);
 
     showStatusMessage(ui->statusbar, tr("Destination set to %1").arg(nativePath), 5000);
     debugVariable("Destination Folder", nativePath);
@@ -513,38 +636,7 @@ void MainWindow::onExtractClicked()
 
                     showExtractEnd(ui->statusbar, files.size());
                     // -----------------  عرض الملفات و المجلدات المستخرجة ----------------------
-                    ui->listWidgetAfter->clear();
-                    ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(outputPath));
-
-                    if (files.isEmpty()) {
-                        ui->listWidgetAfter->addItem(tr("No extracted files."));
-                    } else {
-                        // حساب الحجم الإجمالي للملفات المستخرجة
-                        qint64 totalExtractedSize = 0;
-                        for (const QString &file : files) {
-                            QFileInfo fileInfo(file);
-                            if (fileInfo.exists() && fileInfo.isFile()) {
-                                totalExtractedSize += fileInfo.size();
-                            }
-                        }
-
-                        //  عرض الحجم الإجمالي فقط
-                        if (totalExtractedSize > 0) {
-                            ui->listWidgetAfter->addItem(tr("Total volume: %1").arg(formatSize(totalExtractedSize)));
-                        }
-
-                        // عرض الملفات المستخرجة
-                        for (const QString &file : files) {
-                            QFileInfo fileInfo(file);
-                            QString fileName = fileInfo.fileName();
-
-                            if (fileInfo.isDir()) {
-                                ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(fileName));
-                            } else {
-                                ui->listWidgetAfter->addItem(tr("%1 (Operation completed)").arg(fileName));
-                            }
-                        }
-                    }
+                    updateOutputExplorer(outputPath);
 
                     QMessageBox::information(this, tr("The operation was completed successfully."),
                                              tr("The files were successfully extracted to:\n%1").arg(outputPath));
@@ -606,7 +698,20 @@ void MainWindow::applySettings()
     bool nightMode = settings.value("NightMode", true).toBool();
     enableNightMode(nightMode);
 
-    bool debugConsole = settings.value("DebugConsole", false).toBool();
+    // ─── حجم الخط / تكامل الواجهة ───
+    const int fontSizeIndex = settings.value("FontSizeIndex", 1).toInt();
+    int pointSize = 10;
+    switch (fontSizeIndex) {
+        case 0: pointSize = 10; break; // Small
+        case 2: pointSize = 14; break; // Large
+        default: pointSize = 12; break;// Medium
+    }
+    QFont appFont = QApplication::font();
+    appFont.setPointSize(pointSize);
+    QApplication::setFont(appFont);
+
+    // ─── إظهار وحدة التصحيح عند البدء ───
+    const bool debugConsole = settings.value("DebugConsoleOnStartup", false).toBool();
     if (debugDock) {
         debugDock->setVisible(debugConsole);
     }
@@ -667,10 +772,9 @@ void MainWindow::dropEvent(QDropEvent *event)
     for (const QUrl &url : urls) {
         QString filePath = url.toLocalFile();
         if (!filePath.isEmpty()) {
-            // إضافة الملف إلى القائمة
-            ui->listWidgetBefore->addItem(filePath);
-            // (اختياري) معالجة الملف تلقائياً
-            // onFileSelected(filePath);
+            ui->filepathlineEdit->setText(filePath);
+            populateArchiveTree(filePath, QStringList());
+            break;
         }
     }
     event->acceptProposedAction();
@@ -679,9 +783,9 @@ void MainWindow::dropEvent(QDropEvent *event)
 // حذف الملفات من القائمة قبل الاستخراج
 void MainWindow::onRemoveClicked()
 {
-    int row = ui->listWidgetBefore->currentRow();
-    if (row != -1) {
-        delete ui->listWidgetBefore->takeItem(row);
+    QModelIndex current = ui->treeViewBefore->currentIndex();
+    if (current.isValid()) {
+        archiveContentsModel->removeRow(current.row(), current.parent());
     }
 }
 

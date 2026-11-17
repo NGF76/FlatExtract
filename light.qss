@@ -226,6 +226,7 @@ QLineEdit:disabled {
     color: #94a3b8;
 }
 
+QTreeView,
 QListWidget {
     background-color: #f8fafc;
     alternate-background-color: #f1f5f9;
@@ -236,21 +237,35 @@ QListWidget {
     padding: 4px;
 }
 
+QTreeView::item,
 QListWidget::item {
-    min-height: 28px;
-    padding: 6px 10px;
+    min-height: 26px;
+    padding: 4px 8px;
     border-bottom: 1px solid #eef2f7;
     border-radius: 5px;
 }
 
+QTreeView::item:hover,
 QListWidget::item:hover {
     background-color: #eef4fb;
 }
 
+QTreeView::item:selected,
 QListWidget::item:selected {
     background-color: #dbeafe;
     color: #0f172a;
     border-bottom-color: transparent;
+}
+
+QHeaderView::section {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 /* File dialogs (open file / choose folder) */

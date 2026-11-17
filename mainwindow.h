@@ -16,6 +16,8 @@
 #include <QPlainTextEdit>
 
 class QMenu;
+class QStandardItemModel;
+class QFileSystemModel;
 
 // ============================================================
 // 2. Includes (مكتبات المشروع)
@@ -80,8 +82,17 @@ private:
     void dropEvent(QDropEvent *event);
     void onRemoveClicked();
     void setupDebugConsole();
+    void setupTreeViews();
+    void populateArchiveTree(const QString &archivePath, const QStringList &entries,
+                             const QString &rootType = QString());
+    void updateOutputExplorer(const QString &outputPath);
     void setupUI();
+    void saveDestinationPreference();
     QString formatSize(qint64 size);
+
+    // ─── نماذج شجرة الملفات ───
+    QStandardItemModel *archiveContentsModel = nullptr;
+    QFileSystemModel *outputFileSystemModel = nullptr;
 
     // ─── التخزين الخارجي ───
     void setupExternalStorageMenu();

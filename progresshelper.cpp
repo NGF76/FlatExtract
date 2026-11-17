@@ -72,8 +72,8 @@ void resetProgressBar(QProgressBar *progressBar)
     if (!progressBar) return;
 
     qDebug() << "[DEBUG] resetProgressBar called!";
+    progressBar->setRange(0, 100);
     progressBar->setValue(0);
-    progressBar->setVisible(false);
     QApplication::processEvents();
 }
 

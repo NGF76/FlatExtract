@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>360</height>
+    <width>640</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
-    <height>330</height>
+    <width>560</width>
+    <height>420</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -52,26 +52,27 @@
      </property>
     </widget>
    </item>
+   <!-- Appearance Card -->
    <item>
     <widget class="QFrame" name="appearanceCard">
      <layout class="QVBoxLayout" name="appearanceCardLayout">
       <property name="spacing">
-       <number>8</number>
+       <number>10</number>
       </property>
       <property name="leftMargin">
-       <number>18</number>
+       <number>20</number>
       </property>
       <property name="topMargin">
        <number>16</number>
       </property>
       <property name="rightMargin">
-       <number>18</number>
+       <number>20</number>
       </property>
       <property name="bottomMargin">
        <number>16</number>
       </property>
       <item>
-       <widget class="QLabel" name="settingsSectionTitle">
+       <widget class="QLabel" name="appearanceSectionTitle">
         <property name="text">
          <string>Appearance</string>
         </property>
@@ -85,17 +86,237 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="nightmode">
+       <layout class="QHBoxLayout" name="darkModeRow">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="darkMode">
+          <property name="toolTip">
+           <string>Use the dark interface theme</string>
+          </property>
+          <property name="text">
+           <string>Dark mode</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="darkModeSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="fontSizeLabel">
+          <property name="text">
+           <string>UI scale:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="fontSizeCombo">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Small (10pt)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Medium (12pt)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Large (14pt)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <!-- Behavior Card -->
+   <item>
+    <widget class="QFrame" name="behaviorCard">
+     <layout class="QVBoxLayout" name="behaviorCardLayout">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>20</number>
+      </property>
+      <property name="topMargin">
+       <number>16</number>
+      </property>
+      <property name="rightMargin">
+       <number>20</number>
+      </property>
+      <property name="bottomMargin">
+       <number>16</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="behaviorSectionTitle">
+        <property name="text">
+         <string>Behavior</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="behaviorDescription">
+        <property name="text">
+         <string>Configure how FlatExtract behaves during extraction.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="debugConsoleOnStartup">
         <property name="toolTip">
-         <string>Use the dark interface theme</string>
+         <string>Show the debug console when the application starts</string>
         </property>
         <property name="text">
-         <string>Dark mode</string>
+         <string>Show debug console on startup</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="rememberDestination">
+        <property name="toolTip">
+         <string>Remember the last used destination folder</string>
+        </property>
+        <property name="text">
+         <string>Remember last destination folder</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="createSubfolderPerArchive">
+        <property name="toolTip">
+         <string>Create a subfolder named after the archive for extracted files</string>
+        </property>
+        <property name="text">
+         <string>Create subfolder per archive</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <!-- Extraction Card -->
+   <item>
+    <widget class="QFrame" name="extractionCard">
+     <layout class="QVBoxLayout" name="extractionCardLayout">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>20</number>
+      </property>
+      <property name="topMargin">
+       <number>16</number>
+      </property>
+      <property name="rightMargin">
+       <number>20</number>
+      </property>
+      <property name="bottomMargin">
+       <number>16</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="extractionSectionTitle">
+        <property name="text">
+         <string>Extraction</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="extractionDescription">
+        <property name="text">
+         <string>Control how existing files are handled during extraction.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="overwriteRow">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="overwriteBehaviorLabel">
+          <property name="text">
+           <string>If file exists:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="overwriteSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QComboBox" name="overwriteBehaviorCombo">
+          <property name="minimumSize">
+           <size>
+            <width>140</width>
+            <height>0</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Ask</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Overwrite</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Skip</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rename</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

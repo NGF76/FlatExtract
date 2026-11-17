@@ -163,11 +163,14 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="pathsLayout">
-      <property name="spacing">
+     <layout class="QGridLayout" name="pathsLayout">
+      <property name="horizontalSpacing">
        <number>16</number>
       </property>
-      <item>
+      <property name="verticalSpacing">
+       <number>12</number>
+      </property>
+      <item row="0" column="0">
        <widget class="QFrame" name="sourceCard">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -248,7 +251,7 @@
         </layout>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="QFrame" name="destinationCard">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -406,14 +409,20 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetBefore">
+          <widget class="QTreeView" name="treeViewBefore">
            <property name="alternatingRowColors">
             <bool>true</bool>
            </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>
            </property>
-           <property name="uniformItemSizes">
+           <property name="uniformRowHeights">
+            <bool>true</bool>
+           </property>
+           <property name="animated">
+            <bool>true</bool>
+           </property>
+           <property name="sortingEnabled">
             <bool>true</bool>
            </property>
           </widget>
@@ -460,14 +469,20 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetAfter">
+          <widget class="QTreeView" name="treeViewAfter">
            <property name="alternatingRowColors">
             <bool>true</bool>
            </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>
            </property>
-           <property name="uniformItemSizes">
+           <property name="uniformRowHeights">
+            <bool>true</bool>
+           </property>
+           <property name="animated">
+            <bool>true</bool>
+           </property>
+           <property name="sortingEnabled">
             <bool>true</bool>
            </property>
           </widget>
@@ -506,21 +521,21 @@
        <widget class="QProgressBar" name="progressBar">
         <property name="minimumSize">
          <size>
-          <width>220</width>
-          <height>10</height>
+          <width>240</width>
+          <height>16</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>320</width>
-          <height>10</height>
+          <width>360</width>
+          <height>16</height>
          </size>
         </property>
         <property name="value">
          <number>0</number>
         </property>
         <property name="textVisible">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>

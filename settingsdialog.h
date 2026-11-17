@@ -31,6 +31,11 @@ public:
 
     // ─── دوال عامة للوصول إلى الإعدادات ───
     bool isNightMode() const;
+    int fontSizeIndex() const;               // 0 = Small (10pt), 1 = Medium (12pt), 2 = Large (14pt)
+    bool showDebugConsoleOnStartup() const;
+    bool rememberDestination() const;
+    int overwriteBehavior() const;           // 0 = Ask, 1 = Overwrite, 2 = Skip, 3 = Rename
+    bool createSubfolderPerArchive() const;
 
     // ─── تبديل الوضع الليلي (داخل النافذة) ───
     void toggleNightMode();

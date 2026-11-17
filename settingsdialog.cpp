@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QSettings>
 
 // ============================================================
@@ -25,7 +26,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // ربط الأزرار
     connect(ui->back, &QPushButton::clicked, this, &SettingsDialog::onBackClicked);
     connect(ui->apply, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
-    connect(ui->nightmode, &QCheckBox::clicked, this, &SettingsDialog::toggleNightMode);
+    connect(ui->darkMode, &QCheckBox::clicked, this, &SettingsDialog::toggleNightMode);
 }
 
 // ============================================================
@@ -46,13 +47,33 @@ void SettingsDialog::loadSettings()
     QSettings settings("NGF76", "FlatExtract");
 
     const bool nightMode = settings.value("NightMode", true).toBool();
-    ui->nightmode->setChecked(nightMode);
+    ui->darkMode->setChecked(nightMode);
+
+    const int fontSizeIndex = settings.value("FontSizeIndex", 1).toInt();
+    ui->fontSizeCombo->setCurrentIndex(qBound(0, fontSizeIndex, 2));
+
+    const bool debugConsole = settings.value("DebugConsoleOnStartup", false).toBool();
+    ui->debugConsoleOnStartup->setChecked(debugConsole);
+
+    const bool rememberDest = settings.value("RememberDestination", true).toBool();
+    ui->rememberDestination->setChecked(rememberDest);
+
+    const int overwriteBehavior = settings.value("OverwriteBehavior", 0).toInt();
+    ui->overwriteBehaviorCombo->setCurrentIndex(qBound(0, overwriteBehavior, 3));
+
+    const bool createSubfolder = settings.value("CreateSubfolderPerArchive", true).toBool();
+    ui->createSubfolderPerArchive->setChecked(createSubfolder);
 }
 
 void SettingsDialog::saveSettings()
 {
     QSettings settings("NGF76", "FlatExtract");
-    settings.setValue("NightMode", ui->nightmode->isChecked());
+    settings.setValue("NightMode", ui->darkMode->isChecked());
+    settings.setValue("FontSizeIndex", ui->fontSizeCombo->currentIndex());
+    settings.setValue("DebugConsoleOnStartup", ui->debugConsoleOnStartup->isChecked());
+    settings.setValue("RememberDestination", ui->rememberDestination->isChecked());
+    settings.setValue("OverwriteBehavior", ui->overwriteBehaviorCombo->currentIndex());
+    settings.setValue("CreateSubfolderPerArchive", ui->createSubfolderPerArchive->isChecked());
     settings.sync();
 }
 
@@ -87,7 +108,32 @@ void SettingsDialog::reject()
 
 bool SettingsDialog::isNightMode() const
 {
-    return ui->nightmode->isChecked();
+    return ui->darkMode->isChecked();
+}
+
+int SettingsDialog::fontSizeIndex() const
+{
+    return ui->fontSizeCombo->currentIndex();
+}
+
+bool SettingsDialog::showDebugConsoleOnStartup() const
+{
+    return ui->debugConsoleOnStartup->isChecked();
+}
+
+bool SettingsDialog::rememberDestination() const
+{
+    return ui->rememberDestination->isChecked();
+}
+
+int SettingsDialog::overwriteBehavior() const
+{
+    return ui->overwriteBehaviorCombo->currentIndex();
+}
+
+bool SettingsDialog::createSubfolderPerArchive() const
+{
+    return ui->createSubfolderPerArchive->isChecked();
 }
 
 // ============================================================
@@ -108,5 +154,5 @@ void SettingsDialog::applyNightModeToMainWindow()
     MainWindow *mainWindow = qobject_cast<MainWindow*>(parentWidget());
     if (!mainWindow) return;
 
-    mainWindow->enableNightMode(ui->nightmode->isChecked());
+    mainWindow->enableNightMode(ui->darkMode->isChecked());
 }
